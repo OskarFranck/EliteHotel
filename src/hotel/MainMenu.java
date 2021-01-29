@@ -14,9 +14,15 @@ public class MainMenu {
             choice = Input.askInt("Choose from menu to continue");
 
             switch (choice) {
-                case 1 -> employeeMenu();
-                case 2 -> customerMenu();
-                default -> run = false;
+                case 1:
+                    employeeMenu();
+                    break;
+                case 2:
+                    customerMenu();
+                    break;
+                default:
+                    run = false;
+                    break;
             }
         } while (choice < 1 || choice > 3 || run);
     }
@@ -37,13 +43,27 @@ public class MainMenu {
             choice = Input.askInt("Choose for menu to continue");
 
             switch (choice) {
-                case 1 -> registerNewCustomer();
-                case 2 -> handleCustomers();
-                case 3 -> bookOrUpgradeRoom();
-                case 4 -> orderFood();
-                case 5 -> checkout();
-                case 6 -> showBill();
-                default -> run = false;
+                case 1:
+                    registerNewCustomer();
+                    break;
+                case 2:
+                    handleCustomers();
+                    break;
+                case 3:
+                    bookOrUpgradeRoom();
+                    break;
+                case 4:
+                    orderFood();
+                    break;
+                case 5:
+                    checkout();
+                    break;
+                case 6:
+                    showBill();
+                    break;
+                default:
+                    run = false;
+                    break;
             }
         } while (choice < 1 || choice > 7 || run);
 
@@ -71,10 +91,18 @@ public class MainMenu {
             choice = Input.askInt("Choose from menu to continue");
 
             switch (choice) {
-                case 1 -> searchCustomer();
-                case 2 -> updateCustomer();
-                case 3 -> deleteCustomer();
-                default -> run = false;
+                case 1:
+                    searchCustomer();
+                    break;
+                case 2:
+                    updateCustomer();
+                    break;
+                case 3:
+                    deleteCustomer();
+                    break;
+                default:
+                    run = false;
+                    break;
             }
         } while (choice < 1 || choice > 4 || run);
     }
@@ -103,11 +131,21 @@ public class MainMenu {
             choice = Input.askInt("Choose from menu to continue");
 
             switch (choice) {
-                case 1 -> showRooms();
-                case 2 -> bookRoom();
-                case 3 -> orderFood();
-                case 4 -> checkout();
-                default -> run = false;
+                case 1:
+                    showRooms();
+                    break;
+                case 2:
+                    bookRoom();
+                    break;
+                case 3:
+                    orderFood();
+                    break;
+                case 4:
+                    checkout();
+                    break;
+                default:
+                    run = false;
+                    break;
             }
         } while (choice < 1 || choice > 5 || run);
     }
