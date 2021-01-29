@@ -1,8 +1,5 @@
 package hotel;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 public class MainMenu {
 
     public static void EmployeeMenu() {
@@ -160,8 +157,8 @@ public class MainMenu {
 
     }
     private static void orderFood() {
+        // TODO - Select Room / Customer first
         System.out.println("Order food menu\n");
-
         int choice;
         boolean run = true;
         do {
