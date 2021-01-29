@@ -1,10 +1,10 @@
 package hotel;
 
-public class Food {
+public class Food implements Billable {
 
-    final private MenuItem menuItem;
+    final private FoodMenuItem menuItem;
 
-    public enum MenuItem {
+    public enum FoodMenuItem {
 
         SANDWICH(150) {
             @Override
@@ -33,7 +33,7 @@ public class Food {
 
         private final int price;
 
-        MenuItem(int price) {
+        FoodMenuItem(int price) {
             this.price = price;
         }
 
@@ -43,7 +43,7 @@ public class Food {
 
     }
 
-    Food(MenuItem menuItem) {
+    Food(FoodMenuItem menuItem) {
         this.menuItem = menuItem;
     }
 
@@ -52,12 +52,16 @@ public class Food {
         return menuItem.toString();
     }
 
-    public MenuItem getMenuItem() {
+    public FoodMenuItem getMenuItem() {
         return menuItem;
     }
 
     public int getPrice() {
         return menuItem.getPrice();
+    }
+
+    public String getServiceType() {
+        return "Food";
     }
 
 }
