@@ -157,7 +157,41 @@ public class MainMenu {
 
     }
     private static void orderFood() {
+        // TODO - Select Room / Customer first
+        System.out.println("Order food menu\n");
+        int choice;
+        boolean run = true;
+        do {
+            System.out.println("1. Sandwich - (" + Food.FoodMenuItem.SANDWICH.getPrice() + " kr)");
+            System.out.println("2. Pasta - (" + Food.FoodMenuItem.PASTA.getPrice() + " kr)");
+            System.out.println("3. Noodles - (" + Food.FoodMenuItem.NOODLES.getPrice() + " kr)");
+            System.out.println("4. Drink - (" + Food.FoodMenuItem.DRINK.getPrice() + " kr)");
+            System.out.println("5. Back to main menu\n");
 
+            choice = Input.askInt("Choose from menu to continue");
+
+            switch (choice) {
+                case 1:
+                    System.out.println("A sandwich has been added to the bill.");
+                    // TODO - Add a sandwich object to the customer bill
+                    break;
+                case 2:
+                    System.out.println("A pasta dish has been added to the bill.");
+                    // TODO - Add a pasta object to the customer bill
+                    break;
+                case 3:
+                    System.out.println("A noodles has been added to the bill.");
+                    // TODO - Add a noodle object to the customer bill
+                    break;
+                case 4:
+                    System.out.println("A drink has been added to the bill.");
+                    // TODO - Add a drink object to the customer bill
+                    break;
+                default:
+                    run = false;
+                    break;
+            }
+        } while (choice < 1 || choice > 5 || run);
     }
     private static void checkout() {
 
