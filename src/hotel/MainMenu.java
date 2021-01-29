@@ -1,4 +1,5 @@
 package hotel;
+
 public class MainMenu {
 
     public static void EmployeeMenu() {
@@ -7,7 +8,7 @@ public class MainMenu {
         int choice;
         boolean run = true;
         do {
-            System.out.println("1. Employee");
+            System.out.println("1. Receptionist");
             System.out.println("2. Customer");
             System.out.println("3. Exit program\n");
 
@@ -15,7 +16,7 @@ public class MainMenu {
 
             switch (choice) {
                 case 1:
-                    employeeMenu();
+                    receptionistMenu();
                     break;
                 case 2:
                     customerMenu();
@@ -26,7 +27,7 @@ public class MainMenu {
             }
         } while (choice < 1 || choice > 3 || run);
     }
-    private static void employeeMenu() {
+    private static void receptionistMenu() {
         System.out.println("Employee menu\n");
 
         int choice;
