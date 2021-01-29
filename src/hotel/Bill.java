@@ -24,4 +24,18 @@ public class Bill {
         return sessionBill;
     }
 
+    public int getTotal() {
+        return sessionBill.stream().mapToInt(Billable::getPrice).sum();
+    }
+
+    private String billRow(String type, String name, int price) {
+        return "# " + type + ": " + name + "    " + price + " kr";
+    }
+
+    public void printBill() {
+        System.out.println("Customer bill");
+        sessionBill.forEach(item -> System.out.println(billRow(item.getServiceType(), item.toString(), item.getPrice())));
+        System.out.println("\n# Total: " + getTotal() + " kr");
+    }
+
 }
