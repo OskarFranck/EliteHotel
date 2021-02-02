@@ -31,7 +31,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
-            System.out.println("Customer already exists in database");
+            System.out.println("Customer already exists in database!");
             return false;
         }
     }
@@ -40,6 +40,7 @@ public class Database {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Room");
     }
 
+    /*
     // TODO - Requires RoomType enum to run
     public boolean addRoom(int roomNumber, RoomType type) throws SQLException {
         try {
@@ -49,10 +50,11 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
-            System.out.println("Room already exists in database");
+            System.out.println("Room already exists in database!");
             return false;
         }
     }
+     */
 
     public ResultSet getAllBookings() throws SQLException {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Booking");
@@ -68,7 +70,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
-            System.out.println("Room already exists in database");
+            System.out.println("Room already exists in database!");
             return false;
         }
     }
@@ -83,7 +85,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
-            System.out.println("Room already exists in database");
+            System.out.println("Room already exists in database!");
             return false;
         }
     }
@@ -98,7 +100,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } else {
-            System.out.println("Already checked out");
+            System.out.println("Booking #" + bookingId + " is already checked out!");
             return false;
         }
     }
