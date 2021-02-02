@@ -6,7 +6,7 @@ public class MainMenu {
         System.out.println("Start menu Elite Hotel\n");
 
         int choice;
-        boolean run = true;
+        boolean run = true; 
         do {
             System.out.println("1. Receptionist");
             System.out.println("2. Customer");
@@ -22,22 +22,22 @@ public class MainMenu {
                     customerMenu();
                     break;
                 default:
-                    run = false;
+                    run = false; 
                     break;
             }
-        } while (choice < 1 || choice > 3 || run);
+        } while (choice < 1 || choice > 3 || run); //info tex felaktig inmating
     }
     private static void receptionistMenu() {
         System.out.println("Employee menu\n");
 
         int choice;
-        boolean run = true;
+        boolean run = false; //ändrat från true
         do {
             System.out.println("1. Register new customer");
             System.out.println("2. Handle customers");
             System.out.println("3. Book/upgrade room");
             System.out.println("4. Order food");
-            System.out.println("5. Checkout");
+            System.out.println("5. Checkout"); 
             System.out.println("6. Show bill");
             System.out.println("7. Back to main menu\n");
 
@@ -45,7 +45,7 @@ public class MainMenu {
 
             switch (choice) {
                 case 1:
-                    registerNewCustomer();
+                    CustomerHelper.registerNewCustomer();
                     break;
                 case 2:
                     handleCustomers();
@@ -70,7 +70,7 @@ public class MainMenu {
 
     }
     private static void registerNewCustomer() {
-
+        
     }
     private static void bookOrUpgradeRoom() {
 
@@ -85,22 +85,26 @@ public class MainMenu {
         boolean run = true;
         do {
             System.out.println("1. Search customer");
-            System.out.println("2. Update customer info");
-            System.out.println("3. Delete customer");
-            System.out.println("4. Back to employee menu\n");
+            System.out.println("2. List all customers");
+            System.out.println("3. Update customer info");
+            System.out.println("4. Delete customer");
+            System.out.println("0. Back to employee menu\n");
 
             choice = Input.askInt("Choose from menu to continue");
 
             switch (choice) {
                 case 1:
-                    searchCustomer();
+                    CustomerHelper.searchCustomerID();
                     break;
                 case 2:
-                    updateCustomer();
+                    CustomerHelper.listAllCustomers();
                     break;
                 case 3:
-                    deleteCustomer();
+                    CustomerHelper.updateCustomer();
                     break;
+                 case 4:
+                    CustomerHelper.deleteCustomer();
+                    break;   
                 default:
                     run = false;
                     break;
