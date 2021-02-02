@@ -10,7 +10,7 @@ public class MainMenu {
         do {
             System.out.println("1. Receptionist");
             System.out.println("2. Customer");
-            System.out.println("3. Exit program\n");
+            System.out.println("0. Exit program\n");
 
             choice = Input.askInt("Choose from menu to continue");
 
@@ -25,7 +25,7 @@ public class MainMenu {
                     run = false; 
                     break;
             }
-        } while (choice < 1 || choice > 3 || run); //info tex felaktig inmating
+        } while (choice < 0 || choice > 2 || run); //info tex felaktig inmating
     }
     private static void receptionistMenu() {
         System.out.println("Employee menu\n");
@@ -39,7 +39,7 @@ public class MainMenu {
             System.out.println("4. Order food");
             System.out.println("5. Checkout"); 
             System.out.println("6. Show bill");
-            System.out.println("7. Back to main menu\n");
+            System.out.println("0. Back to main menu\n");
 
             choice = Input.askInt("Choose for menu to continue");
 
@@ -66,7 +66,7 @@ public class MainMenu {
                     run = false;
                     break;
             }
-        } while (choice < 1 || choice > 7 || run);
+        } while (choice < 0 || choice > 6 || run);
 
     }
     private static void registerNewCustomer() {
@@ -131,7 +131,7 @@ public class MainMenu {
             System.out.println("2. Book room");
             System.out.println("3. Order food");
             System.out.println("4. Checkout");
-            System.out.println("5. Back to main menu\n");
+            System.out.println("0. Back to main menu\n");
 
             choice = Input.askInt("Choose from menu to continue");
 
@@ -152,7 +152,7 @@ public class MainMenu {
                     run = false;
                     break;
             }
-        } while (choice < 1 || choice > 5 || run);
+        } while (choice < 0 || choice > 4 || run);
     }
     private static void showRooms() {
 

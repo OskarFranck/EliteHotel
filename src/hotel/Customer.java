@@ -5,7 +5,7 @@ package hotel;
 public class Customer {
     
     private int id;
-   // private int roomNr;
+   // private static int roomNr;
    // private String food;
     private String firstName;
     private String lastName;
