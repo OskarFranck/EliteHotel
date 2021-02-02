@@ -5,7 +5,7 @@ public class Room {
     private final int roomNumber;
     private final RoomType roomType;
     private boolean rented = false;
-    //private Customer renter = null;
+    private Customer renter = null;
 
     Room(int roomNumber, RoomType roomType) {
         this.roomNumber = roomNumber;
@@ -24,8 +24,8 @@ public class Room {
         return rented;
     }
 
-//    public Customer getRenter() {
-//        return renter;
-//    }
+    public Customer getRenter() {
+        return renter;
+    }
 
 }
