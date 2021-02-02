@@ -109,7 +109,7 @@ public class MainMenu {
                     run = false;
                     break;
             }
-        } while (choice < 1 || choice > 4 || run);
+        } while (choice < 0 || choice > 4 || run);
     }
     private static void searchCustomer() {
 
