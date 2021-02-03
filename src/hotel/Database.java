@@ -29,13 +29,13 @@ public class Database {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Customer");
     }
 
-    public boolean addCustomer(int id, String firstName, String lastName, String phoneNumber) throws SQLException {
+    // First parameter (ID) removed
+    public boolean addCustomer(String firstName, String lastName, String phoneNumber) throws SQLException {
         try {
-            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer VALUES (?,?,?,?)");
-            statement.setInt(1, id);
-            statement.setString(2, firstName);
-            statement.setString(3, lastName);
-            statement.setString(4, phoneNumber);
+            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer(firstName, lastName, phoneNumber) VALUES (?,?,?)");
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            statement.setString(3, phoneNumber);
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
@@ -114,6 +114,7 @@ public class Database {
             PreparedStatement statement = sqlConnection.prepareStatement("UPDATE Booking SET roomNumber = ? WHERE bookingId = ?");
             statement.setInt(1, newRoomNumber);
             statement.setInt(2, bookingId);
+            statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
             System.err.println("Error: Can not update booking to database!");

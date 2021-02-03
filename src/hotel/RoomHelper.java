@@ -1,10 +1,8 @@
 package hotel;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class RoomHelper {
 
@@ -14,15 +12,25 @@ public class RoomHelper {
         int customerId = Input.askInt("Enter customer id: ");
         LocalDate checkInDate = LocalDate.now();
 
-//        if (addBooking(roomNumber,customerId,checkInDate)) {
-//            System.out.println("Booking added to system");
-//        }
+        if (Database.getInstance().addBooking(roomNumber,customerId,checkInDate)) {
+            System.out.println("Booking added to system");
+        }
     }
 
-    public static void upgradeRoom() {
+    public static void upgradeRoom() throws SQLException{
+        ResultSet rs = Database.getInstance().getAllBookings();
+        while (rs.next()) {
+            int bookingId = rs.getInt("bookingId");
+            int roomNumber = rs.getInt("roomNumber");
+            int customerId = rs.getInt("customerId");
+            System.out.println("Booking ID: " + bookingId + ", Room number: " + roomNumber + ", Customer ID: " + customerId);
+        }
         int bookingId = Input.askInt("Enter booking Id: ");
         int upgradedRoomNumber = Input.askInt("Enter new room number: ");
 
+        if(Database.getInstance().upgradeBooking(bookingId, upgradedRoomNumber)) {
+            System.out.println("Room upgraded");
+        }
     }
     public static void orderFood() {
 
@@ -35,26 +43,38 @@ public class RoomHelper {
         //TODO Ropa på databasen och sätt utcheckingsdatum
 
     }
-    public void addRooms() {
-        Room roomOne = new Room(101, RoomType.STANDARD_SINGLE);
-        Room roomTwo = new Room(102, RoomType.STANDARD_SINGLE);
-        Room roomThree = new Room(103, RoomType.STANDARD_DOUBLE);
-        Room roomFour = new Room(104, RoomType.STANDARD_DOUBLE);
-        Room roomFive = new Room(105, RoomType.STANDARD_DOUBLE);
-        Room roomSix = new Room(206, RoomType.STANDARD_SINGLE);
-        Room roomSeven = new Room(207, RoomType.STANDARD_DOUBLE);
-        Room roomEight = new Room(208, RoomType.LUXURY_DOUBLE);
-        Room roomNine = new Room(209, RoomType.LUXURY_DOUBLE);
-        Room roomTen = new Room(210, RoomType.LUXURY_SINGLE);
-        Room roomEleven = new Room(311, RoomType.LUXURY_SINGLE);
-        Room roomTwelve = new Room(312, RoomType.LUXURY_DOUBLE);
-        Room roomThirteen = new Room(313, RoomType.LUXURY_DOUBLE);
-        Room roomFourteen = new Room(314, RoomType.DELUXE_DOUBLE);
-        Room roomFifteen = new Room(315, RoomType.DELUXE_DOUBLE);
+    public static void addRoomsToDataBase() throws SQLException{
 
-        List<Room> rooms = Arrays.asList(roomOne, roomTwo, roomThree, roomFour, roomFive, roomSix, roomSeven, roomEight, roomNine, roomTen, roomEleven, roomTwelve, roomThirteen, roomFourteen, roomFifteen);
+        Database.getInstance().addRoom(101, RoomType.STANDARD_SINGLE);
+        Database.getInstance().addRoom(102, RoomType.STANDARD_SINGLE);
+        Database.getInstance().addRoom(103, RoomType.STANDARD_DOUBLE);
+        Database.getInstance().addRoom(104, RoomType.STANDARD_DOUBLE);
+        Database.getInstance().addRoom(105, RoomType.STANDARD_DOUBLE);
+        Database.getInstance().addRoom(201, RoomType.STANDARD_SINGLE);
+        Database.getInstance().addRoom(202, RoomType.STANDARD_DOUBLE);
+        Database.getInstance().addRoom(203, RoomType.LUXURY_DOUBLE);
+        Database.getInstance().addRoom(204, RoomType.LUXURY_DOUBLE);
+        Database.getInstance().addRoom(205, RoomType.LUXURY_SINGLE);
+        Database.getInstance().addRoom(301, RoomType.LUXURY_SINGLE);
+        Database.getInstance().addRoom(302, RoomType.LUXURY_DOUBLE);
+        Database.getInstance().addRoom(303, RoomType.LUXURY_DOUBLE);
+        Database.getInstance().addRoom(304, RoomType.DELUXE_DOUBLE);
+        Database.getInstance().addRoom(305, RoomType.DELUXE_DOUBLE);
 
+    }
+    public static void addCustomersToDataBase() throws SQLException {
 
+        Database.getInstance().addCustomer("Oskar", "Franck", "123123");
+        Database.getInstance().addCustomer("Egon", "Bergfalk", "123123");
+        Database.getInstance().addCustomer("Bella", "Andersson", "123123");
+        Database.getInstance().addCustomer("Jack", "Olson", "123123");
+        Database.getInstance().addCustomer("Svinto", "Stal", "123123");
+        Database.getInstance().addCustomer("Bla", "Bla", "123123");
+        Database.getInstance().addCustomer("Magdalena", "Bergqvist", "123123");
+        Database.getInstance().addCustomer("Oscar", "Bergstrom", "123123");
+        Database.getInstance().addCustomer("Jonas", "Lindgren", "123123");
+        Database.getInstance().addCustomer("Elenore", "Franck", "123123");
+        Database.getInstance().addCustomer("Sandra", "Nordin", "123123");
 
     }
 }
