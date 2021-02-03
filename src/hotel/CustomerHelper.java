@@ -1,17 +1,29 @@
 package hotel;
 
 import static hotel.Input.*;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collector;
 import static java.util.stream.Collectors.toList;
 
 public class CustomerHelper {
+//    static Database db;
+//        static {
+//            try{
+//                db = new Database("elitehotel", DatabaseCredentials.databaseUser, DatabaseCredentials.databasePassword);
+//            }catch (SQLException throwable) {
+//                throwable.printStackTrace();
+//            }
+//        }
+//        
+//        
     //public static Set<Customer> Customers = new HashSet<>(); //måste konvertera för att använda stream
     public static List<Customer> customers = new ArrayList<>();
     public static String firstName;
     public static String lastName;
     public static String phoneNumber;
     public static int ID;
+    
 
     public static void registerNewCustomer() {
         boolean goOn = true;
@@ -44,6 +56,7 @@ public class CustomerHelper {
                 }
             }
         }
+        
     }
 
     public static void searchCustomerLastName() {

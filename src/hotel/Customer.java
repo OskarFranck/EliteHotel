@@ -13,8 +13,7 @@ public class Customer {
     
     static int idGenerator = 1;
     
-    public Customer() {
-    }
+  
 
     public Customer(String firstName, String lastName, String phoneNumber) {
         this.id = idGenerator;

@@ -35,6 +35,7 @@ public class Input {
         } while (run);
         return userInput;
     }
+    
     public static double getUserInputDouble() {
         String userInput;
         double parseInput = 0;
