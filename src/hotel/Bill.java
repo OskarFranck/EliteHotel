@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 public class Bill {
 
+    //TODO Kvitto ska hålla rumsnummer
+    //TODO Ändra att billable är en HashMap
+
     final private ArrayList<Billable> billItems = new ArrayList<>();
 
     public void add(Billable service) {

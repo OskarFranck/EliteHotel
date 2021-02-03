@@ -1,8 +1,10 @@
 package hotel;
 
+import java.sql.SQLException;
+
 public class MainMenu {
 
-    public static void EmployeeMenu() {
+    public static void mainMenu() throws SQLException{
         System.out.println("Start menu Elite Hotel\n");
 
         int choice;
@@ -121,7 +123,7 @@ public class MainMenu {
 
     }
 
-    private static void customerMenu() {
+    private static void customerMenu() throws SQLException {
         System.out.println("Customer menu\n");
 
         int choice;
@@ -140,7 +142,7 @@ public class MainMenu {
                     showRooms();
                     break;
                 case 2:
-                    bookRoom();
+                    RoomHelper.bookRoom();
                     break;
                 case 3:
                     orderFood();
