@@ -4,7 +4,14 @@ import java.util.ArrayList;
 
 public class Bill {
 
+    // TODO - Fix: When restoring Room does not get added back into billItems list
+
     final private ArrayList<Billable> billItems = new ArrayList<>();
+    private int roomNumber;
+
+    public Bill(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
 
     public void add(Billable service) {
         billItems.add(service);
