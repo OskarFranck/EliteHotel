@@ -4,7 +4,7 @@ USE elitehotel;
 -- DROP DATABASE elitehotel;
 
 CREATE TABLE Customer (
-	customerId INT PRIMARY KEY AUTO_INCREMENT, 
+	customerId INT PRIMARY KEY,
     firstName VARCHAR(60) NOT NULL, CHECK(firstName != ''),
     lastName VARCHAR(60) NOT NULL, CHECK(lastName != ''),
     phoneNumber VARCHAR(20)
