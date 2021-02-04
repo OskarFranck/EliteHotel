@@ -18,6 +18,10 @@ public class Database {
     public static Database getInstance() throws SQLException {
         if (singletonInstance == null) {
             singletonInstance = new Database("elitehotel", DatabaseCredentials.databaseUser, DatabaseCredentials.databasePassword);
+
+            // Restore database data into application memory on launch
+            RoomHelper.restoreRooms();
+            RoomHelper.restoreRoomBookingStatus();
         }
         return singletonInstance;
     }

@@ -126,8 +126,6 @@ public class RoomHelper {
         Database.getInstance().addRoom(303, RoomType.LUXURY_DOUBLE);
         Database.getInstance().addRoom(304, RoomType.DELUXE_DOUBLE);
         Database.getInstance().addRoom(305, RoomType.DELUXE_DOUBLE);
-        restoreRooms();
-        restoreRoomBookingStatus();
 
     }
     public static void addCustomersToDataBase() throws SQLException {
