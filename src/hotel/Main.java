@@ -17,8 +17,6 @@ public class Main {
         // Första gången du ropar på .getInstance() så initsierar den kopplingen mot databasen.
         // Mer om hur Singleton fungerar: https://www.geeksforgeeks.org/singleton-class-java/
 
-        // TODO -- Se alla lediga rum
-        // TODO -- Se alla lediga rum av en viss typ
         MainMenu.mainMenu();
     }
 

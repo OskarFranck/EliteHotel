@@ -3,7 +3,9 @@ package hotel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class RoomHelper {
 
@@ -39,16 +41,25 @@ public class RoomHelper {
         }
     }
 
-    private static void restoreRoomBookingStatus() {
+    public static void restoreRoomBookingStatus() {
         try {
             ResultSet resultSet = Database.getInstance().getAllBookings();
             while(resultSet.next()) {
+                int bookingId = resultSet.getInt("bookingId");
+                int roomNumber = resultSet.getInt("roomNumber");
+
                 if (resultSet.getString("checkInDate") != null && resultSet.getString("checkOutDate") == null) {
-                    Room room = getRoomMap().get(resultSet.getInt("roomNumber"));
-                    room.setRented(true);
+
+                    Room room = getRoomMap().get(roomNumber);
+                    if (room == null) {
+                        System.err.println("Warning: When loading bookings - room #" + roomNumber + " exists in the database, but not in the current program. Skipping loading booking #" + bookingId);
+                        continue;
+                    } else {
+                        room.setRented(true);
+                    }
 
                     int customerId = resultSet.getInt("customerId");
-                    Customer customer = CustomerHelper.getCustomer(customerId);
+                    Customer customer = CustomerHelper.customers.stream().filter(customers -> customers.getId() == customerId).findFirst().orElse(null);
                     if (customer == null) {
                         System.err.println("Warning: Could not restore booking for customer id #" + customerId + ". Not found in customer list.");
                     }
@@ -122,16 +133,57 @@ public class RoomHelper {
     public static void addCustomersToDataBase() throws SQLException {
 
         Database.getInstance().addCustomer("Oskar", "Franck", "123123");
+        CustomerHelper.customers.add(new Customer("Oskar", "Franck", "123123"));
         Database.getInstance().addCustomer("Egon", "Bergfalk", "123123");
+        CustomerHelper.customers.add(new Customer("Egon", "Bergfalk", "123123"));
         Database.getInstance().addCustomer("Bella", "Andersson", "123123");
+        CustomerHelper.customers.add(new Customer("Bella", "Andersson", "123123"));
         Database.getInstance().addCustomer("Jack", "Olson", "123123");
+        CustomerHelper.customers.add(new Customer("Jack", "Olson", "123123"));
         Database.getInstance().addCustomer("Svinto", "Stal", "123123");
+        CustomerHelper.customers.add(new Customer("Svinto", "Stal", "123123"));
         Database.getInstance().addCustomer("Bla", "Bla", "123123");
+        CustomerHelper.customers.add(new Customer("Bla", "Bla", "123123"));
         Database.getInstance().addCustomer("Magdalena", "Bergqvist", "123123");
+        CustomerHelper.customers.add(new Customer("Magdalena", "Bergqvist", "123123"));
         Database.getInstance().addCustomer("Oscar", "Bergstrom", "123123");
+        CustomerHelper.customers.add(new Customer("Oscar", "Bergstrom", "123123"));
         Database.getInstance().addCustomer("Jonas", "Lindgren", "123123");
+        CustomerHelper.customers.add(new Customer("Jonas", "Lindgren", "123123"));
         Database.getInstance().addCustomer("Elenore", "Franck", "123123");
+        CustomerHelper.customers.add(new Customer("Elenore", "Franck", "123123"));
         Database.getInstance().addCustomer("Sandra", "Nordin", "123123");
+        CustomerHelper.customers.add(new Customer("Sandra", "Nordin", "123123"));
 
     }
+
+    /**
+     * Returns a list of all Room-objects, filtered to all available or booked rooms
+     * @param isAvailable true for only available rooms, false for only booked rooms
+     * @return ArrayList of Rooms, empty list if no matches were found
+     */
+    public static ArrayList<Room> getAvailableRooms(boolean isAvailable) {
+        if (isAvailable) {
+            return getRoomMap().values().stream()
+                    .filter(room -> !room.getRented())
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            return getRoomMap().values().stream()
+                    .filter(Room::getRented)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+    }
+
+    /**
+     * Returns a list of all Room-objects, filtered to all available or booked rooms, and to a specific RoomType
+     * @param isAvailable true for only available rooms, false for only booked rooms
+     * @param roomType the RoomType enum to match for
+     * @return ArrayList of Rooms, empty list if no matches were found
+     */
+    public static ArrayList<Room> getAvailableRooms(boolean isAvailable, RoomType roomType) {
+        return getAvailableRooms(isAvailable).stream()
+                .filter(room -> room.getRoomType() == roomType)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
 }
