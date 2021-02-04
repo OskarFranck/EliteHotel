@@ -1,8 +1,10 @@
 package hotel;
 
+import java.sql.SQLException;
+
 public class MainMenu {
 
-    public static void EmployeeMenu() {
+    public static void mainMenu() throws SQLException{
         System.out.println("Start menu Elite Hotel\n");
 
         int choice;
@@ -27,18 +29,19 @@ public class MainMenu {
             }
         } while (choice < 0 || choice > 2 || run); //info tex felaktig inmating
     }
-    private static void receptionistMenu() {
+    private static void receptionistMenu() throws SQLException{
         System.out.println("Employee menu\n");
 
         int choice;
-        boolean run = false; //ändrat från true
+        boolean run = true; //ändrat från true
         do {
             System.out.println("1. Register new customer");
             System.out.println("2. Handle customers");
-            System.out.println("3. Book/upgrade room");
-            System.out.println("4. Order food");
-            System.out.println("5. Checkout"); 
-            System.out.println("6. Show bill");
+            System.out.println("3. Book room");
+            System.out.println("4. Upgrade room");
+            System.out.println("5. Order food");
+            System.out.println("6. Checkout");
+            System.out.println("7. Show bill");
             System.out.println("0. Back to main menu\n");
 
             choice = Input.askInt("Choose for menu to continue");
@@ -51,22 +54,25 @@ public class MainMenu {
                     handleCustomers();
                     break;
                 case 3:
-                    bookOrUpgradeRoom();
+                    RoomHelper.bookRoom();
                     break;
                 case 4:
-                    orderFood();
+                    RoomHelper.upgradeRoom();
                     break;
                 case 5:
-                    checkout();
+                    orderFood();
                     break;
                 case 6:
+                    checkout();
+                    break;
+                case 7:
                     showBill();
                     break;
                 default:
                     run = false;
                     break;
             }
-        } while (choice < 0 || choice > 6 || run);
+        } while (choice < 0 || choice > 7 || run);
 
     }
     private static void registerNewCustomer() {
@@ -121,7 +127,7 @@ public class MainMenu {
 
     }
 
-    private static void customerMenu() {
+    private static void customerMenu() throws SQLException {
         System.out.println("Customer menu\n");
 
         int choice;
@@ -140,7 +146,7 @@ public class MainMenu {
                     showRooms();
                     break;
                 case 2:
-                    bookRoom();
+                    RoomHelper.bookRoom();
                     break;
                 case 3:
                     orderFood();

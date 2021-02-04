@@ -122,7 +122,6 @@ public class Database {
         }
     }
 
-
     public boolean checkOutBooking(int bookingId, LocalDate checkOutDate) throws SQLException {
         if (noBookingExists(bookingId)) {
             System.err.println("Error: No booking with that ID!");

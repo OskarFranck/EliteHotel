@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public class Bill {
 
     // TODO - Fix: When restoring Room does not get added back into billItems list
+    //TODO Kvitto ska hålla rumsnummer
+    //TODO Ändra att billable är en HashMap
 
     final private ArrayList<Billable> billItems = new ArrayList<>();
     private int roomNumber;
