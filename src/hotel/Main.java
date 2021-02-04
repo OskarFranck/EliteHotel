@@ -19,8 +19,7 @@ public class Main {
 
         // TODO -- Se alla lediga rum
         // TODO -- Se alla lediga rum av en viss typ
-
-        MainMenu.EmployeeMenu();
+        MainMenu.mainMenu();
     }
 
 }
