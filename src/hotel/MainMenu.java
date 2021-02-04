@@ -1,10 +1,12 @@
 package hotel;
 
+import java.sql.SQLException;
+import hotel.CustomerHelper.*;
 public class MainMenu {
 
-    public static void EmployeeMenu() {
+    public static void EmployeeMenu() throws SQLException {
         System.out.println("Start menu Elite Hotel\n");
-
+        CustomerHelper.loadCustomers();
         int choice;
         boolean run = true; 
         do {
@@ -21,13 +23,19 @@ public class MainMenu {
                 case 2:
                     customerMenu();
                     break;
+                case 0:
+                    CustomerHelper.customersToDatabase();
+                    System.out.println("Tack och välkommen åter");
+                    run = false;
+                    break;   
                 default:
                     run = false; 
                     break;
             }
         } while (choice < 0 || choice > 2 || run); //info tex felaktig inmating
     }
-    private static void receptionistMenu() {
+    
+    private static void receptionistMenu() throws SQLException {
         System.out.println("Employee menu\n");
 
         int choice;
@@ -78,7 +86,7 @@ public class MainMenu {
     private static void showBill() {
 
     }
-    private static void handleCustomers() {
+    private static void handleCustomers() throws SQLException {
         System.out.println("Handle customers\n");
 
         int choice;
@@ -98,10 +106,11 @@ public class MainMenu {
                     break;
                 case 2:
                     CustomerHelper.listAllCustomers();
+                    Database.getInstance().getStartingPointIdGenerator();
                     break;
-                case 3:
-                    CustomerHelper.updateCustomer();
-                    break;
+//                case 3:
+                    //CustomerHelper.updateCustomer();
+                  //  break;
                  case 4:
                     CustomerHelper.deleteCustomer();
                     break;   

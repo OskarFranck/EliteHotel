@@ -6,7 +6,7 @@ import java.time.LocalDate;
 public class Database {
 
     private final String url;
-    private Connection sqlConnection;
+    public static Connection sqlConnection;
     public static Database singletonInstance = null;
 
     Database(String databaseName, String databaseUser, String databasePassword) throws SQLException {
@@ -28,7 +28,19 @@ public class Database {
     public ResultSet getAllCustomers() throws SQLException {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Customer");
     }
-
+    
+    //Hämtar högsta id-värde som finns i customer-tabellen
+    //spara i int som kan hämtas till idGenerator i customer
+    public static int getStartingPointIdGenerator() throws SQLException {
+       
+        ResultSet rs = sqlConnection.createStatement().executeQuery("SELECT MAX(customerID) AS max FROM Customer");   
+        rs.next();
+        //System.out.println(" Här kommer maxvärdet ; ");
+        int maxId = rs.getInt("max");
+        //System.out.println(maxId); 
+        return maxId;    
+    }    
+ 
     public boolean addCustomer(int id, String firstName, String lastName, String phoneNumber) throws SQLException {
         try {
             PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer VALUES (?,?,?,?)");
@@ -39,7 +51,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
-            System.err.println("Error: Customer already exists in database!");
+           // System.err.println("Error: Customer already exists in database!");
             return false;
         }
     }
