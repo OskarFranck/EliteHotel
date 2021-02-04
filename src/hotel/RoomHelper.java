@@ -3,8 +3,63 @@ package hotel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
 
 public class RoomHelper {
+
+    private static final HashMap<Integer, Room> roomMap = new HashMap<>();
+
+    public static HashMap<Integer, Room> getRoomMap() {
+        return roomMap;
+    }
+
+    public static void addRoomToMap(Room room) {
+        if (roomMap.containsKey(room.getRoomNumber())) {
+            System.err.println("Error: Room already exists in map");
+            return;
+        }
+
+        try {
+            roomMap.put(room.getRoomNumber(), room);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void restoreRooms() {
+        try {
+            ResultSet resultSet = Database.getInstance().getAllRooms();
+            while (resultSet.next()) {
+                Room room = new Room(resultSet.getInt("roomNumber"), RoomType.valueOf(resultSet.getString("roomType")));
+                addRoomToMap(room);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: Could not read rooms from database!");
+            e.printStackTrace();
+        }
+    }
+
+    private static void restoreRoomBookingStatus() {
+        try {
+            ResultSet resultSet = Database.getInstance().getAllBookings();
+            while(resultSet.next()) {
+                if (resultSet.getString("checkInDate") != null && resultSet.getString("checkOutDate") == null) {
+                    Room room = getRoomMap().get(resultSet.getInt("roomNumber"));
+                    room.setRented(true);
+
+                    int customerId = resultSet.getInt("customerId");
+                    Customer customer = CustomerHelper.getCustomer(customerId);
+                    if (customer == null) {
+                        System.err.println("Warning: Could not restore booking for customer id #" + customerId + ". Not found in customer list.");
+                    }
+                    room.setRenter(customer);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: Could not read expected data from database!");
+            e.printStackTrace();
+        }
+    }
 
     public static void bookRoom() throws SQLException {
 
@@ -60,6 +115,8 @@ public class RoomHelper {
         Database.getInstance().addRoom(303, RoomType.LUXURY_DOUBLE);
         Database.getInstance().addRoom(304, RoomType.DELUXE_DOUBLE);
         Database.getInstance().addRoom(305, RoomType.DELUXE_DOUBLE);
+        restoreRooms();
+        restoreRoomBookingStatus();
 
     }
     public static void addCustomersToDataBase() throws SQLException {
