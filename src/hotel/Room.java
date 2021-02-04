@@ -28,4 +28,12 @@ public class Room {
         return renter;
     }
 
+    public void setRented(boolean rented) {
+        this.rented = rented;
+    }
+
+    public void setRenter(Customer renter) {
+        this.renter = renter;
+    }
+
 }
