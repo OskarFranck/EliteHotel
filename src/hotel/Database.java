@@ -10,11 +10,23 @@ public class Database {
     private Connection sqlConnection;
     public static Database singletonInstance = null;
 
+    /**
+     * Holds a JDBC connection to local MySQL database server.
+     * @param databaseName String name of local database
+     * @param databaseUser String name of MySQL user (default is 'root')
+     * @param databasePassword String password of MySQL user
+     * @throws SQLException
+     */
     Database(String databaseName, String databaseUser, String databasePassword) throws SQLException {
         this.url = "jdbc:mysql://localhost:3306/" + databaseName + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         this.sqlConnection = DriverManager.getConnection(url, databaseUser, databasePassword);
     }
 
+    /**
+     * Get a singleton instance/reference of class. Initializes up to one instance.
+     * @return Static reference to singleton object
+     * @throws SQLException
+     */
     public static Database getInstance() throws SQLException {
         if (singletonInstance == null) {
             singletonInstance = new Database("elitehotel", DatabaseCredentials.databaseUser, DatabaseCredentials.databasePassword);
@@ -30,11 +42,28 @@ public class Database {
         sqlConnection.close();
     }
 
+    /**
+     * Retrieves the whole Customer table from the database as a ResultSet
+     * @return ResultSet of Customer table
+     * @throws SQLException
+     */
     public ResultSet getAllCustomers() throws SQLException {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Customer");
     }
 
+    /**
+     * Attempts to add the data from a Customer to the database.
+     * @param firstName String of Customer first name, NOT empty
+     * @param lastName String of Customer last name, NOT empty
+     * @param phoneNumber String of Customer phone number, can be null
+     * @return boolean success/failure
+     * @throws SQLException
+     */
     public boolean addCustomer(String firstName, String lastName, String phoneNumber) throws SQLException {
+        if (firstName.isEmpty() || lastName.isEmpty()) {
+            return false;
+        }
+
         try {
             PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer (firstName, lastName, phoneNumber) VALUES (?,?,?)");
             statement.setString(1, firstName);
@@ -43,15 +72,49 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
-            System.err.println("Error: Customer already exists in database!");
             return false;
         }
     }
 
+    /**
+     * Attempts to add the data from a Customer-object to the database.
+     * @param customer Customer-object to add to database.
+     * @return boolean success/failure
+     * @throws SQLException
+     */
+    public boolean addCustomer(Customer customer) throws SQLException {
+        if (customer.getFirstName().isEmpty() || customer.getLastName().isEmpty()) {
+            return false;
+        }
+
+        try {
+            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer (firstName, lastName, phoneNumber) VALUES (?,?,?)");
+            statement.setString(1, customer.getFirstName());
+            statement.setString(2, customer.getLastName());
+            statement.setString(3, customer.getPhoneNumber());
+            statement.executeUpdate();
+            return true;
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Retrieves the whole Room table from the database as a ResultSet
+     * @return ResultSet of Customer table
+     * @throws SQLException
+     */
     public ResultSet getAllRooms() throws SQLException {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Room");
     }
 
+    /**
+     * Attempts to add the data from a Room to the database.
+     * @param roomNumber Unique identity number of the room to be added.
+     * @param type RoomType enum describing the type of room this is
+     * @return boolean success/failure
+     * @throws SQLException
+     */
     public boolean addRoom(int roomNumber, RoomType type) throws SQLException {
         try {
             PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Room VALUES (?,?)");
@@ -65,10 +128,42 @@ public class Database {
         }
     }
 
+    /**
+     * Attempts to add the data from a Room to the database.
+     * @param room Room-object to add to database.
+     * @return boolean success/failure
+     * @throws SQLException
+     */
+    public boolean addRoom(Room room) throws SQLException {
+        try {
+            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Room VALUES (?,?)");
+            statement.setInt(1, room.getRoomNumber());
+            statement.setString(2, room.getRoomType().toString());
+            statement.executeUpdate();
+            return true;
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.err.println("Error: Room already exists in database!");
+            return false;
+        }
+    }
+
+    /**
+     * Retrieves the whole Booking table from the database as a ResultSet
+     * @return ResultSet of Customer table
+     * @throws SQLException
+     */
     public ResultSet getAllBookings() throws SQLException {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Booking");
     }
 
+    /**
+     * Attempts to add a booking to the database.
+     * @param roomNumber Unique identity number of the room to be added, first generated by the database.
+     * @param customerId Unique identity number of the customer to be added.
+     * @param checkInDate LocalDate-object of the check-in date. "LocalDate.now()" can be used.
+     * @return boolean success/failure
+     * @throws SQLException
+     */
     public boolean addBooking(int roomNumber, int customerId, LocalDate checkInDate) throws SQLException {
         try {
             PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Booking (roomNumber, customerId, checkInDate) VALUES (?,?,?)");
@@ -83,31 +178,35 @@ public class Database {
         }
     }
 
+    /**
+     * Attempts to retrieve a single booking from a booking id
+     * @param bookingId Unique identity number of the booking, first generated by the database.
+     * @return ResultSet of a single row from the Booking table
+     * @throws SQLException
+     */
     public ResultSet getBooking(int bookingId) throws SQLException {
         PreparedStatement query = sqlConnection.prepareStatement("SELECT * FROM Booking WHERE bookingId = ?");
         query.setInt(1, bookingId);
         return query.executeQuery();
     }
 
+    /**
+     * Check if a booking id already exists in the database.
+     * @param bookingId Unique identity number of the booking, first generated by the database.
+     * @return boolean (true = the booking id does not exist yet, false = it already exists)
+     * @throws SQLException
+     */
     private boolean noBookingExists(int bookingId) throws SQLException {
         return !getBooking(bookingId).next();
     }
 
-    public boolean addBooking(int roomNumber, int customerId, LocalDate checkInDate, LocalDate checkOutDate) throws SQLException {
-        try {
-            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Booking (roomNumber, customerId, checkInDate, checkOutDate) VALUES (?,?,?,?)");
-            statement.setInt(1, roomNumber);
-            statement.setInt(2, customerId);
-            statement.setDate(3, Date.valueOf(checkInDate));
-            statement.setDate(4, Date.valueOf(checkOutDate));
-            statement.executeUpdate();
-            return true;
-        } catch (SQLIntegrityConstraintViolationException e) {
-            System.err.println("Error: Can not add booking to database!");
-            return false;
-        }
-    }
-
+    /**
+     * Upgrades a booking by updating the room number of target booking in the database.
+     * @param bookingId Unique identity number of the target booking, first generated by the database.
+     * @param newRoomNumber New room number to upgrade/change to.
+     * @return boolean success/failure
+     * @throws SQLException
+     */
     public boolean upgradeBooking(int bookingId, int newRoomNumber) throws SQLException {
         if (noBookingExists(bookingId)) {
             System.err.println("Error: No booking with that ID!");
@@ -126,6 +225,13 @@ public class Database {
         }
     }
 
+    /**
+     * Adds a checkout date to an existing booking in the database. Used during the checkout process.
+     * @param bookingId Unique identity number of the target booking, first generated by the database.
+     * @param checkOutDate LocalDate-object of the checkout-date, most likely "LocalDate.now()" should be used.
+     * @return boolean success/failure
+     * @throws SQLException
+     */
     public boolean checkOutBooking(int bookingId, LocalDate checkOutDate) throws SQLException {
         if (noBookingExists(bookingId)) {
             System.err.println("Error: No booking with that ID!");
