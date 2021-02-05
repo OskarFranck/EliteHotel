@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class RoomHelper {
-    static List<Booking> bookings = new ArrayList<>();
 
     private static final HashMap<Integer, Room> roomMap = new HashMap<>();
 
@@ -123,32 +122,17 @@ public class RoomHelper {
     }
     public static void addCustomersToDataBase() {
 
-        /*try {
-            Database.getInstance().addCustomer("Oskar", "Franck", "123123");
             CustomerHelper.customers.add(new Customer("Oskar", "Franck", "123123"));
-            Database.getInstance().addCustomer("Egon", "Bergfalk", "123123");
             CustomerHelper.customers.add(new Customer("Egon", "Bergfalk", "123123"));
-            Database.getInstance().addCustomer("Bella", "Andersson", "123123");
             CustomerHelper.customers.add(new Customer("Bella", "Andersson", "123123"));
-            Database.getInstance().addCustomer("Jack", "Olson", "123123");
             CustomerHelper.customers.add(new Customer("Jack", "Olson", "123123"));
-            Database.getInstance().addCustomer("Svinto", "Stal", "123123");
             CustomerHelper.customers.add(new Customer("Svinto", "Stal", "123123"));
-            Database.getInstance().addCustomer("Bla", "Bla", "123123");
             CustomerHelper.customers.add(new Customer("Bla", "Bla", "123123"));
-            Database.getInstance().addCustomer("Magdalena", "Bergqvist", "123123");
             CustomerHelper.customers.add(new Customer("Magdalena", "Bergqvist", "123123"));
-            Database.getInstance().addCustomer("Oscar", "Bergstrom", "123123");
             CustomerHelper.customers.add(new Customer("Oscar", "Bergstrom", "123123"));
-            Database.getInstance().addCustomer("Jonas", "Lindgren", "123123");
             CustomerHelper.customers.add(new Customer("Jonas", "Lindgren", "123123"));
-            Database.getInstance().addCustomer("Elenore", "Franck", "123123");
             CustomerHelper.customers.add(new Customer("Elenore", "Franck", "123123"));
-            Database.getInstance().addCustomer("Sandra", "Nordin", "123123");
             CustomerHelper.customers.add(new Customer("Sandra", "Nordin", "123123"));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }*/
 
     }
 

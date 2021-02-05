@@ -31,6 +31,9 @@ public class Customer {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+
+        // Lägg till customer i listan
+        CustomerHelper.customers.add(this);
     }
 
     public int getId() {

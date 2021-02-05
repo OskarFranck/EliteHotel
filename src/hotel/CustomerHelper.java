@@ -23,7 +23,7 @@ public class CustomerHelper {
             phoneNumber = askString("Enter phone number"); //Begränsning antal tecken? regex bara 0-9 och vissa tecken?
 
             Customer cust = new Customer(firstName, lastName, phoneNumber);
-            customers.add(cust);
+            //customers.add(cust); // Görs nu direkt i Customer-klassen i constructorn
             //Behöver vi ha denna?
             System.out.println("New customer added to List Customers: " + cust.toString());
             System.out.println("Add another customer ? Y/N"); //Kontroll finns att bara Y eller N.
@@ -58,12 +58,12 @@ public class CustomerHelper {
 
     public static void listAllCustomers() throws SQLException {
         if (customers.isEmpty()) {
-           System.out.println("No customers in register. \n");
-         } else {
-        customers.stream().forEach(System.out::println);
+            System.out.println("No customers in register. \n");
+        } else {
+            customers.stream().forEach(System.out::println);
         }
     }
-    
+
     public static void searchCustomerID() {
         System.out.println("Serch for customer");
         int ID = askInt("To search for customer, please enter customer ID");
@@ -119,13 +119,13 @@ public class CustomerHelper {
         }
     }
 
-    public static void deleteCustomer() throws SQLException {      
+    public static void deleteCustomer() throws SQLException {
         int ID = askInt("To delete customer, enter customer ID:");
         if (customers.isEmpty()) {
             System.out.println("No customers in register.");
-        } else {            
+        } else {
             customers.removeIf(c -> c.getId() == ID);
-            Database.getInstance().deleteCustomer(ID);        
+            Database.getInstance().deleteCustomer(ID);
         }
     }
 
