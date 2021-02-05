@@ -6,7 +6,6 @@ public class MainMenu {
 
     public static void mainMenu() throws SQLException{
         System.out.println("Start menu Elite Hotel\n");
-        CustomerHelper.loadCustomers();
         int choice;
         boolean run = true; 
         do {

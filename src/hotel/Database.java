@@ -66,8 +66,7 @@ public class Database {
 
     //Hämtar högsta id-värde som finns i customer-tabellen
     //spara i int som kan hämtas till idGenerator i customer}
-    public static int getStartingPointIdGenerator() throws SQLException {
-
+    public int getStartingPointIdGenerator() throws SQLException {
         ResultSet rs = sqlConnection.createStatement().executeQuery("SELECT MAX(customerID) AS max FROM Customer");
         rs.next();
         //System.out.println(" Här kommer maxvärdet ; ");
@@ -84,7 +83,7 @@ public class Database {
      * @return boolean success/failure
      * @throws SQLException -
      */
-    public boolean addCustomer(String firstName, String lastName, String phoneNumber) throws SQLException {
+    public boolean addCustomer(int id, String firstName, String lastName, String phoneNumber) throws SQLException {
         if (firstName.isEmpty() || lastName.isEmpty()) {
             return false;
         }

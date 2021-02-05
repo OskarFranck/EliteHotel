@@ -13,22 +13,6 @@ public class CustomerHelper {
     public static String lastName;
     public static String phoneNumber;
 
-    public static void loadCustomers() throws SQLException {
-        try {
-            ResultSet r = Database.getInstance().getAllCustomers();
-            while (r.next()) {
-                int dbId = r.getInt("customer.customerId");
-                String dbFName = r.getString("customer.firstName");
-                String dbLName = r.getString("customer.lastName");
-                String dbPhoneNr = r.getString("customer.phoneNumber");
-                Customer dbC = new Customer(dbId, dbFName, dbLName, dbPhoneNr);
-                customers.add(dbC);               
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
     public static void registerNewCustomer() throws SQLException {
         boolean goOn = true;
         while (goOn) {

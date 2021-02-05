@@ -123,7 +123,7 @@ public class RoomHelper {
     }
     public static void addCustomersToDataBase() {
 
-        try {
+        /*try {
             Database.getInstance().addCustomer("Oskar", "Franck", "123123");
             CustomerHelper.customers.add(new Customer("Oskar", "Franck", "123123"));
             Database.getInstance().addCustomer("Egon", "Bergfalk", "123123");
@@ -148,7 +148,7 @@ public class RoomHelper {
             CustomerHelper.customers.add(new Customer("Sandra", "Nordin", "123123"));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        }
+        }*/
 
     }
 

@@ -1,13 +1,9 @@
-
 package hotel;
 
-import static hotel.Database.sqlConnection;
 import java.sql.SQLException;
-import java.util.Comparator;
-
 
 public class Customer {
-    
+
     private int id;
     private String firstName;
     private String lastName;
@@ -16,20 +12,20 @@ public class Customer {
     
     //Denna konstruktor används när customers hämtas från databasen
     public Customer(int dbId, String dbFName, String dbLName,String dbPhoneNr){
-    this.id = dbId;
-    this.firstName = dbFName;
-    this.lastName = dbLName; 
-    this.phoneNumber = dbPhoneNr;
+        this.id = dbId;
+        this.firstName = dbFName;
+        this.lastName = dbLName;
+        this.phoneNumber = dbPhoneNr;
     }
     
     //Den här konstruktorn används när nya customers skapas från menyval
     //Hämtar högsta kundId:t från DB och använder som startpunkt till idgeneratorn.
     public Customer(String firstName, String lastName, String phoneNumber) {
-       try{
-        idGen = Database.getInstance().getStartingPointIdGenerator();
-       }catch(SQLException e){
-          System.out.println(e);
-       }
+        try{
+            idGen = Database.getInstance().getStartingPointIdGenerator();
+        }catch(SQLException e){
+            System.out.println(e);
+        }
         this.id = idGen +1;
         idGen ++;
         this.firstName = firstName;
