@@ -4,10 +4,23 @@ import java.util.ArrayList;
 
 public class Bill {
 
-    //TODO Kvitto ska hålla rumsnummer
+    // TODO - Fix: When restoring Room does not get added back into billItems list
     //TODO Ändra att billable är en HashMap
 
     final private ArrayList<Billable> billItems = new ArrayList<>();
+    private int roomNumber;
+
+    public Bill(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
 
     public void add(Billable service) {
         billItems.add(service);
