@@ -54,7 +54,7 @@ public class MainMenu {
                     handleCustomers();
                     break;
                 case 3:
-                    RoomHelper.bookRoom2();
+                    RoomHelper.bookRoom();
                     break;
                 case 4:
                     RoomHelper.upgradeRoom();
