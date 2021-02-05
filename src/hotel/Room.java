@@ -6,6 +6,7 @@ public class Room {
     private final RoomType roomType;
     private boolean rented = false;
     private Customer renter = null;
+    private Bill roomBill = null;
 
     Room(int roomNumber, RoomType roomType) {
         this.roomNumber = roomNumber;
@@ -28,12 +29,18 @@ public class Room {
         return renter;
     }
 
+    public Bill getBill() { return roomBill; }
+
     public void setRented(boolean rented) {
         this.rented = rented;
     }
 
     public void setRenter(Customer renter) {
         this.renter = renter;
+    }
+
+    public void setRoomBill(Bill bill) {
+        this.roomBill = bill;
     }
 
 }

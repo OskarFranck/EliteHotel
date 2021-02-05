@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 public class Bill {
 
-    // TODO - Fix: When restoring Room does not get added back into billItems list
-    //TODO Ändra att billable är en HashMap
-
-    final private ArrayList<Billable> billItems = new ArrayList<>();
+    final private ArrayList<BillableService> billItems = new ArrayList<>();
     private int roomNumber;
+    private boolean completed = false;
 
     public Bill(int roomNumber) {
         this.roomNumber = roomNumber;
@@ -22,11 +20,19 @@ public class Bill {
         this.roomNumber = roomNumber;
     }
 
-    public void add(Billable service) {
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public void add(BillableService service) {
         billItems.add(service);
     }
 
-    public boolean remove(Billable service) {
+    public boolean remove(BillableService service) {
         try {
             billItems.remove(service);
 
@@ -37,12 +43,12 @@ public class Bill {
         }
     }
 
-    public ArrayList<Billable> getBillItems() {
+    public ArrayList<BillableService> getBillItems() {
         return billItems;
     }
 
-    public int getTotal() {
-        return billItems.stream().mapToInt(Billable::getPrice).sum();
+    public int getBillableItemsTotal() {
+        return billItems.stream().mapToInt(BillableService::getPrice).sum();
     }
 
     private String billRow(String type, String name, int price) {
@@ -50,9 +56,12 @@ public class Bill {
     }
 
     public void printBill() {
+
+        // TODO (Oscar) - Beräkna rumskostnad baserat på hur många dagar dem bott vid checkout
+
         System.out.println("Customer bill");
         billItems.forEach(item -> System.out.println(billRow(item.getServiceType(), item.toString(), item.getPrice())));
-        System.out.println("\n# Total: " + getTotal() + " kr");
+        System.out.println("\n# Total: " + getBillableItemsTotal() + " kr");
     }
 
 }

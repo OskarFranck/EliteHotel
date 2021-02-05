@@ -72,6 +72,20 @@ public class RoomHelper {
         }
     }
 
+    public static void restoreAllBills() {
+        try {
+            ResultSet resultSet = Database.getInstance().getAllBills();
+            while (resultSet.next()) {
+                // Check if bill has been marked as "complete", then ignore restoring
+                if (resultSet.getString("complete") == null || !resultSet.getBoolean("complete")) {
+                    Database.getInstance().restoreSingleBill(resultSet.getInt("billId"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: Could not get bill data from database");
+        }
+    }
+
     public static void bookRoom() throws SQLException {
 
         int roomNumber = Input.askInt("Enter room number: ");

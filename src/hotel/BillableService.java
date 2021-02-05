@@ -1,6 +1,6 @@
 package hotel;
 
-public interface Billable {
+public interface BillableService {
 
     int getPrice();
     String getServiceType();

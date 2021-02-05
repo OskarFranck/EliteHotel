@@ -1,6 +1,6 @@
 package hotel;
 
-public class Food implements Billable {
+public class Food implements BillableService {
 
     final private FoodMenuItem menuItem;
 

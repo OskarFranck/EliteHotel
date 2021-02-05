@@ -2,7 +2,6 @@ package hotel;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class Database {
 
@@ -34,6 +33,7 @@ public class Database {
             // Restore database data into application memory on launch
             RoomHelper.restoreRooms();
             RoomHelper.restoreRoomBookingStatus();
+            RoomHelper.restoreAllBills();
         }
         return singletonInstance;
     }
@@ -295,54 +295,80 @@ public class Database {
     }
 
     /**
-     * Get all bills and their data from the database
-     * @return ResultSet of database query with 3 columns [billId (int), roomNumber (int), foodItemType (String)]
-     * @throws SQLException -
-     */
-    public ResultSet getBillData() throws SQLException {
-        return sqlConnection.createStatement().executeQuery("SELECT * FROM billView");
-    }
-
-    /**
      * Get single bill and all food data from the database
      * @param billId Unique identity number of target bill
-     * @return ResultSet of database query with 3 columns [billId (int), roomNumber (int), foodItemType (String)]
+     * @return ResultSet of database query with 3 columns [billId (int), roomNumber (int), foodItemType (String), complete (Boolean)]
      * @throws SQLException -
      */
-    public ResultSet getBillData(int billId) throws SQLException {
+    public ResultSet getSingleBillData(int billId) throws SQLException {
         PreparedStatement statement = sqlConnection.prepareStatement("SELECT * FROM billView WHERE billId = ?");
         statement.setInt(1, billId);
         return statement.executeQuery();
     }
 
     /**
-     * Attempts to restore a Bill-object from the data in the database. Requires the ID of the bill.
+     * Attempts to restore a single Bill-object from the data in the database. Requires the ID of the bill.
      * @param billId Unique identity number of target bill
      * @return A new Bill-object based on the retrieved data, or null if anything went wrong.
      */
-    public Bill restoreBill(int billId) {
+    public void restoreSingleBill(int billId) {
         try {
             Bill bill = null;
-            ResultSet resultSet = getBillData(billId);
+            ResultSet resultSet = getSingleBillData(billId);
 
             // Loop through all rows in the result
             while (resultSet.next()) {
                 if (bill == null) {
                     // Create the Bill-object with the retrieved Room number, once.
-                    bill = new Bill(resultSet.getInt(2));
+                    bill = new Bill(resultSet.getInt("roomNumber"));
+                    if(resultSet.getBoolean("complete")) {
+                        bill.setCompleted(true);
+                    }
                 }
-                String foodItemType = resultSet.getString(3);
+                String foodItemType = resultSet.getString("foodItemType");
                 bill.add(new Food(Food.FoodMenuItem.valueOf(foodItemType)));
             }
 
             if (bill == null) {
                 System.err.println("Error: No bill to restore with given ID");
+                return;
             }
 
-            return bill;
+            System.out.println(bill.getBillItems());
+
+            RoomHelper.getRoomMap().get(bill.getRoomNumber()).setRoomBill(bill);
         } catch (SQLException e) {
             System.err.println("Error: Could not get bill from database");
-            return null;
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Get all bills and their data from the database
+     * @return ResultSet of database query with 3 columns [billId (int), roomNumber (int), foodItemType (String), complete (Boolean)]
+     * @throws SQLException -
+     */
+    public ResultSet getAllBills() throws SQLException {
+        return sqlConnection.createStatement().executeQuery("SELECT * FROM bill");
+    }
+
+    /**
+     * Set a bill as complete in the database during a checkout
+     * @param billId Unique identity number of target bill
+     * @return boolean for success/failure
+     * @throws SQLException
+     */
+    public boolean checkOutBill(int billId) throws SQLException {
+        try {
+            PreparedStatement statement = sqlConnection.prepareStatement("UPDATE Bill SET complete = ? WHERE billId = ?");
+            statement.setBoolean(1, true);
+            statement.setInt(2, billId);
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error: Could not checkout bill in database");
+            e.printStackTrace();
+            return false;
         }
     }
 

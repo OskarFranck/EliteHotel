@@ -31,7 +31,8 @@ INSERT INTO FoodItem VALUES ('SANDWICH'), ('PASTA'), ('NOODLES'), ('DRINK');
 
 CREATE TABLE Bill (
 	billId INT PRIMARY KEY AUTO_INCREMENT,
-    roomNumber INT, FOREIGN KEY (roomNumber) REFERENCES Room(roomNumber)
+    roomNumber INT, FOREIGN KEY (roomNumber) REFERENCES Room(roomNumber),
+    complete BOOL NOT NULL
 );
 
 CREATE TABLE BillFoodItems (
@@ -40,6 +41,6 @@ CREATE TABLE BillFoodItems (
 );
 
 CREATE VIEW billView AS
-SELECT Bill.billId, roomNumber, FoodItem.foodItemType FROM Bill
+SELECT Bill.billId, roomNumber, FoodItem.foodItemType, Bill.complete FROM Bill
 JOIN BillFoodItem ON Bill.billId = BillFoodItem.billId
 JOIN FoodItem ON FoodItem.foodItemType = BillFoodItem.foodItemType
