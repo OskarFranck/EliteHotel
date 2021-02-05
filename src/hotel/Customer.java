@@ -1,24 +1,37 @@
 
 package hotel;
 
+import static hotel.Database.sqlConnection;
+import java.sql.SQLException;
+import java.util.Comparator;
+
 
 public class Customer {
     
     private int id;
-   // private static int roomNr;
-   // private String food;
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    static int idGen;
     
-    static int idGenerator = 1;
-    
-    public Customer() {
+    //Denna konstruktor används när customers hämtas från databasen
+    public Customer(int dbId, String dbFName, String dbLName,String dbPhoneNr){
+    this.id = dbId;
+    this.firstName = dbFName;
+    this.lastName = dbLName; 
+    this.phoneNumber = dbPhoneNr;
     }
-
+    
+    //Den här konstruktorn används när nya customers skapas från menyval
+    //Hämtar högsta kundId:t från DB och använder som startpunkt till idgeneratorn.
     public Customer(String firstName, String lastName, String phoneNumber) {
-        this.id = idGenerator;
-        idGenerator ++;
+       try{
+        idGen = Database.getInstance().getStartingPointIdGenerator();
+       }catch(SQLException e){
+          System.out.println(e);
+       }
+        this.id = idGen +1;
+        idGen ++;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -60,10 +73,5 @@ public class Customer {
     public String toString() {
         return "Customer: " + "Id: " + id + ",  First name: " + firstName + ", "
                 + "Last name: " + lastName + ", Phone number: " + phoneNumber ;
-    }
-    
-    
-    
-    
-    
+    }    
 }
