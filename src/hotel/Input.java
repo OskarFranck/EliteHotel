@@ -59,7 +59,7 @@ public class Input {
     }
 
     public static int askInt(String print) {
-        System.out.println(print);
+        System.out.print(print);
         return Input.getUserInputInt();
     }
 
