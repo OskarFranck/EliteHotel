@@ -82,7 +82,7 @@ public class RoomHelper {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error: Could not get bill data from database");
+            System.err.println("Error: Could not get bill data from database");
         }
     }
 

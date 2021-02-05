@@ -334,8 +334,6 @@ public class Database {
                 return;
             }
 
-            System.out.println(bill.getBillItems());
-
             RoomHelper.getRoomMap().get(bill.getRoomNumber()).setRoomBill(bill);
         } catch (SQLException e) {
             System.err.println("Error: Could not get bill from database");
