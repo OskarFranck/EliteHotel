@@ -30,7 +30,7 @@ public class MainMenu {
         } while (choice < 0 || choice > 2 || run); //info tex felaktig inmating
     }
     private static void receptionistMenu() throws SQLException{
-        System.out.println("Employee menu\n");
+        System.out.println("Receptionist menu\n");
 
         int choice;
         boolean run = true; //ändrat från true
@@ -54,7 +54,7 @@ public class MainMenu {
                     handleCustomers();
                     break;
                 case 3:
-                    RoomHelper.bookRoom();
+                    RoomHelper.bookRoom2();
                     break;
                 case 4:
                     RoomHelper.upgradeRoom();
@@ -63,7 +63,7 @@ public class MainMenu {
                     orderFood();
                     break;
                 case 6:
-                    checkout();
+                    RoomHelper.checkOut();
                     break;
                 case 7:
                     showBill();
