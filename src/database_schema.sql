@@ -22,3 +22,25 @@ CREATE TABLE Booking (
     checkInDate DATE NOT NULL,
     checkOutDate DATE
 );
+
+CREATE TABLE FoodItem (
+    foodItemType VARCHAR(20) PRIMARY KEY
+);
+
+INSERT INTO FoodItem VALUES ('SANDWICH'), ('PASTA'), ('NOODLES'), ('DRINK');
+
+CREATE TABLE Bill (
+	billId INT PRIMARY KEY AUTO_INCREMENT,
+    roomNumber INT, FOREIGN KEY (roomNumber) REFERENCES Room(roomNumber),
+    complete BOOL NOT NULL
+);
+
+CREATE TABLE BillFoodItems (
+	billId INT, FOREIGN KEY (billId) REFERENCES Bill(billId),
+    foodItemType VARCHAR(20), FOREIGN KEY (foodItemType) REFERENCES FoodItem(foodItemType)
+);
+
+CREATE VIEW billView AS
+SELECT Bill.billId, roomNumber, FoodItem.foodItemType, Bill.complete FROM Bill
+JOIN BillFoodItem ON Bill.billId = BillFoodItem.billId
+JOIN FoodItem ON FoodItem.foodItemType = BillFoodItem.foodItemType

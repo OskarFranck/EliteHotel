@@ -6,8 +6,15 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 	// write your code here
-        Database db = new Database("elitehotel", DatabaseCredentials.databaseUser, DatabaseCredentials.databasePassword);
-        MainMenu.EmployeeMenu();
+
+        Database.getInstance(); // init database before main loop
+
+        // TODO - Ta bort demo data här
+        // ## Fyller programmet och databasen med demo kunder, rum och bokningar - kan köras en gång
+        //RoomHelper.addCustomersToDataBase();
+//        RoomHelper.addRoomsToDataBase();
+
+        MainMenu.mainMenu();
     }
 
 }
