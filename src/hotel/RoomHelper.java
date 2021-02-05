@@ -30,14 +30,34 @@ public class RoomHelper {
         }
     }
 
-    public static void bookRoom() throws SQLException {
+    public static void bookRoom() {
 
-        int roomNumber = Input.askInt("Enter room number: ");
+        //TODO Ändra så att metoden hämtar info om rum / bookningar från hashmap ist för databas
+        //TODO Hämta rum från hashmap, på rum sätt setrented till true, och koppla kunden till rummet (renter) hämta lista från customerHelper
+
+
+        getRoomMap().entrySet().forEach(enter -> {
+            System.out.println(enter.getKey() + " " + enter.getValue());
+        });
+        System.out.println(roomMap.size());
+
+        int addRoomNumber = Input.askInt("Enter room number: ");
         int customerId = Input.askInt("Enter customer id: ");
         LocalDate checkInDate = LocalDate.now();
 
-        if (Database.getInstance().addBooking(roomNumber,customerId,checkInDate)) {
-            System.out.println("Booking added to system");
+        if (!getRoomMap().get(addRoomNumber).isRented()) {
+            try {
+                if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
+                    System.out.println("Booking added to DB");
+                }
+            } catch (SQLException throwables) {
+
+            }
+            getRoomMap().get(addRoomNumber).setRented(true);
+            getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
+            System.out.println("Booking added to hashMap");
+        } else {
+            System.out.println("Could not add booking");
         }
     }
 
@@ -64,71 +84,8 @@ public class RoomHelper {
 //            throwables.printStackTrace();
 //        }
     }
-    public static void searchInArray() {
-
-        //TODO bug in search does not exit loop
-        //TODO hård testa do-while loopen (return och boolean run)
-
-        System.out.println("Search in booking\n");
-        System.out.println("1. Search by customer ID");
-        System.out.println("2. Search by lastname");
-        System.out.println("3. Show all bookings");
-        System.out.println("0. Go back to previous menu");
-
-        int choice;
-        boolean run = true;
-         do {
-            choice = Input.askInt("Enter from above");
-
-            switch (choice) {
-                case 1:
-                    addBookingsToArray();
-                    int customerId = Input.askInt("Enter customer ID");
-                    bookings.stream().filter(bs -> bs.getCustomer() == customerId).forEach(System.out::println);
-                    return;
-                case 2:
-                    CustomerHelper.searchCustomerLastName();
-                    return;
-                case 3:
-                    addBookingsToArray();
-                    for (Booking booking : bookings) {
-                        System.out.println(booking);
-                    }
-                    return;
-                default:
-                    run = false;
-                    break;
-            }
-        } while (choice < 0 || choice > 3 || run);
-
-    }
-
-    public static void addBookingsToArray() {
-        // add booking table to arraylist
-        bookings.clear();
-        int bookingId;
-        int roomNumber;
-        int customerId;
-        String checkInDate;
-        String checkOutDate;
-        try {
-            ResultSet rs = Database.getInstance().getAllBookings();
-            while (rs.next()) {
-                bookingId = rs.getInt("bookingId");
-                roomNumber = rs.getInt("roomNumber");
-                customerId = rs.getInt("customerId");
-                checkInDate = rs.getString("checkInDate");
-                checkOutDate = rs.getString("checkOutDate");
-                Booking booking = new Booking(bookingId, roomNumber, customerId, checkInDate, checkOutDate);
-                bookings.add(booking);
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
 
     public static void checkOut() {
-        searchInArray();
 
         //TODO komma på ur man ska skicka
         int bookingId = Input.askInt("Enter booking id for checkout");
