@@ -31,9 +31,7 @@ public class Database {
             singletonInstance = new Database("elitehotel", DatabaseCredentials.databaseUser, DatabaseCredentials.databasePassword);
 
             // Restore database data into application memory on launch
-            RoomHelper.restoreRooms();
-            RoomHelper.restoreRoomBookingStatus();
-            RoomHelper.restoreAllBills();
+            RestoreFromDatabase.restoreAll(true);
         }
         return singletonInstance;
     }
