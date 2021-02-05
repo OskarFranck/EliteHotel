@@ -106,11 +106,11 @@ public class MainMenu {
                     break;
                 case 2:
                     CustomerHelper.listAllCustomers();
-                    Database.getInstance().getStartingPointIdGenerator();
+                   // Database.getInstance().getStartingPointIdGenerator();
                     break;
-//                case 3:
-                    //CustomerHelper.updateCustomer();
-                  //  break;
+                case 3:
+                    CustomerHelper.updateCustomer();
+                    break;
                  case 4:
                     CustomerHelper.deleteCustomer();
                     break;   

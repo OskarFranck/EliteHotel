@@ -29,8 +29,23 @@ public class Database {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Customer");
     }
     
+    public boolean deleteCustomer(int Id) throws SQLException {
+        try{
+            String delCust = "DELETE FROM Customer WHERE customerId = ?";           
+            PreparedStatement statement = sqlConnection.prepareStatement(delCust);
+            statement.setInt(1, Id);
+            statement.executeUpdate();
+            System.out.println( "DB uppdaterad, id " + Id + " borttagen");
+            System.out.println("");
+        return true;
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
     //Hämtar högsta id-värde som finns i customer-tabellen
-    //spara i int som kan hämtas till idGenerator i customer
+    //spara i int som kan hämtas till idGenerator i customer}
     public static int getStartingPointIdGenerator() throws SQLException {
        
         ResultSet rs = sqlConnection.createStatement().executeQuery("SELECT MAX(customerID) AS max FROM Customer");   

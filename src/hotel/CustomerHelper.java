@@ -135,14 +135,13 @@ public class CustomerHelper {
         }
     }
 
-    public static void deleteCustomer() {
-        //System.out.println("Delete customer, ");
+    public static void deleteCustomer() throws SQLException {      
         int ID = askInt("To delete customer, enter customer ID:");
         if (customers.isEmpty()) {
             System.out.println("No customers in register.");
-        } else {//finns bara en matchning, något annat bättre sätt?           
-            // customers.stream().filter(c -> c.getId() == ID).forEach(c ->, removeif);
+        } else {            
             customers.removeIf(c -> c.getId() == ID);
+            Database.getInstance().deleteCustomer(ID);        
         }
     }
 
