@@ -1,9 +1,11 @@
 package hotel;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -30,15 +32,6 @@ public class RoomHelper {
     }
 
     public static void bookRoom() {
-
-        //TODO Ändra så att metoden hämtar info om rum / bookningar från hashmap ist för databas
-        //TODO Hämta rum från hashmap, på rum sätt setrented till true, och koppla kunden till rummet (renter) hämta lista från customerHelper
-
-
-        getRoomMap().entrySet().forEach(enter -> {
-            System.out.println(enter.getKey() + " " + enter.getValue());
-        });
-        System.out.println(roomMap.size());
 
         int addRoomNumber = Input.askInt("Enter room number: ");
         int customerId = Input.askInt("Enter customer id: ");
@@ -67,21 +60,41 @@ public class RoomHelper {
         //TODO Hämta nya rummet från hashmap, på rum sätt setrented till true, och koppla kunden till rummet (renter) hämta från customerHelper
         //TODO Flytta bill från gammla till nya rummet
 
-        ArrayList availableRooms = getAvailableRooms(true);
+        int currentRoomNumber = Input.askInt("Enter current room number");
+        int upgradedRoomNumber = Input.askInt("Enter new room number: ");
+        upgradeRoomDB(currentRoomNumber ,upgradedRoomNumber);
+        upgradeRoomHM(currentRoomNumber, upgradedRoomNumber);
 
-//        searchInArray();
-//
-//        try {
-//            int bookingId = Input.askInt("Enter booking ID: ");
-//            int upgradedRoomNumber = Input.askInt("Enter new room number: ");
-//            if (getRoomMap().get(upgradedRoomNumber).isRented()) {
-//                if (Database.getInstance().upgradeBooking(bookingId, upgradedRoomNumber)) {
-//                    System.out.println("Room upgraded");
-//                }
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
+    }
+
+    public static void upgradeRoomDB(int upgradedRoomNumber, int currentRoomNumber) {
+        //TODO ändra // kolla på att ändra så att DB ändra rumsbookningen med customerId ist för BookingId
+        int bookingId = 0;
+        try {
+            Customer cust = roomMap.get(currentRoomNumber).getRenter();
+            int customerId = cust.getId();
+            ResultSet rs = Database.getInstance().getSingleBooking(currentRoomNumber, customerId);
+            while (rs.next()) {
+                bookingId = rs.getInt("bookingId");
+            }
+            Database.getInstance().upgradeBooking(bookingId, upgradedRoomNumber);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void upgradeRoomHM(int currentRoomNumber, int upgradedRoomNumber) {
+
+        if (roomMap.get(currentRoomNumber).isRented()) {
+            roomMap.get(currentRoomNumber).setRented(false);
+            Customer cust = roomMap.get(currentRoomNumber).getRenter();
+            roomMap.get(currentRoomNumber).setRenter(null);
+            roomMap.get(upgradedRoomNumber).setRenter(cust);
+            roomMap.get(upgradedRoomNumber).setRented(true);
+            System.out.println("Room updated in hashMap");
+        } else {
+            System.out.println("Can't upgrade room, no existing booking exists");
+        }
     }
 
     public static void checkOut() {
