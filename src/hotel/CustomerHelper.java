@@ -68,19 +68,41 @@ public class CustomerHelper {
         }
     }
 
-    public static void updateCustomer() {
-        System.out.println("Update customer");
-        int ID = askInt("Enter customer ID");
+    public static void updateCustomer(Customer customer) {
+        System.out.println("Update customer:");
+        System.out.println(customer);
+        // int ID = askInt("Enter customer ID");
 
-        System.out.println("");
-        System.out.println("1. Change first name");
-        System.out.println("2. Change last name");
-        System.out.println("3. Change phone number");
-        System.out.println("");
+        while (true) {
+            System.out.println("\n1. Change first name");
+            System.out.println("2. Change last name");
+            System.out.println("3. Change phone number\n");
+            System.out.println("0. Cancel and go back\n");
+            int choice = Input.askInt("Choose from menu to continue: ");
+            switch (choice) {
+                case 1:
+                    customer.setFirstName(askString("Enter new first name: "));
+                    break;
+                case 2:
+                    customer.setLastName(askString("Enter new last name: "));
+                    break;
+                case 3:
+                    customer.setPhoneNumber(askString("Enter new phone number: "));
+                    break;
+                case 0:
+                    // TODO - WARNING! Oscar fixade här nyss, kanske inte funkar helt korrekt
+                    try {
+                        Database.getInstance().updateCustomer(customer);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                default:
+                    System.out.println("Wrong input. Try again!");
+            }
+        }
 
-        int choice = Input.askInt("Choose from menu to continue");
-
-        switch (choice) {
+        /*switch (choice) {
 
             case 1:
                 String fname = askString("Enter new first name");
@@ -108,7 +130,7 @@ public class CustomerHelper {
                 break;
             default:
                 System.out.println("Wrong input");
-        }
+        }*/
     }
 
     public static void deleteCustomer() throws SQLException {

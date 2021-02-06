@@ -106,14 +106,20 @@ public class MainMenu {
 
             switch (choice) {
                 case 1:
-                    //CustomerHelper.searchCustomerID();
+                    //CustomerHelper.searchCustomerID(); // TODO - Kan vi ta bort denna?
+                    Customer displayCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (displayCustomer != null) {
+                        displayCustomer.toString();
+                    }
                     break;
                 case 2:
                     CustomerHelper.listAllCustomers();
-                   // Database.getInstance().getStartingPointIdGenerator();
                     break;
                 case 3:
-                    CustomerHelper.updateCustomer();
+                    Customer updateCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (updateCustomer != null) {
+                        CustomerHelper.updateCustomer(updateCustomer);
+                    }
                     break;
                  case 4:
                     CustomerHelper.deleteCustomer();

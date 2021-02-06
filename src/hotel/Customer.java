@@ -29,6 +29,11 @@ public class Customer {
 
         // Lägg till customer i listan
         CustomerHelper.customers.add(this);
+        try {
+            Database.getInstance().addCustomer(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
