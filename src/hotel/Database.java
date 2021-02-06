@@ -97,7 +97,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
-            System.err.println("Error: Customer already exists in database!");
+            // System.err.println("Error: Customer already exists in database!");
             return false;
         }
     }
