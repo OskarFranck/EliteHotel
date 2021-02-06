@@ -30,6 +30,16 @@ public class RoomHelper {
 
     public static void bookRoom() {
 
+        System.out.println("Rooms available for booking");
+
+        getAvailableRooms(true).forEach(room -> {
+            if (room.getRenter() == null) {
+                System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
+            } else {
+                System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
+            }
+        });
+
         int addRoomNumber = Input.askInt("Enter room number: ");
         int customerId = Input.askInt("Enter customer id: ");
         LocalDate checkInDate = LocalDate.now();
@@ -52,52 +62,77 @@ public class RoomHelper {
 
     public static void upgradeRoom() {
 
-        //TODO When upgrading room can be booked more then once. function exists in book room
-        //TODO hämta gammalt rum från hashmap och sätt setRented till false, koppla bort kund koplingen(till null)
-        //TODO Hämta nya rummet från hashmap, på rum sätt setrented till true, och koppla kunden till rummet (renter) hämta från customerHelper
-        //TODO Flytta bill från gammla till nya rummet
+        RoomHelper.getAvailableRooms(false).forEach(room -> {
+            if (room.getRenter() == null) {
+                System.out.println("Room #" + room.getRoomNumber() + ", Unknown guest");
+            } else {
+                System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
+            }
+        });
 
-        int currentRoomNumber = Input.askInt("Enter current room number");
+        int currentRoomNumber = Input.askInt("Enter current room number: ");
+
+        RoomHelper.getAvailableRooms(true).forEach(room -> {
+            if (room.getRenter() == null) {
+                System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
+            } else {
+                System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
+            }
+        });
+
         int upgradedRoomNumber = Input.askInt("Enter new room number: ");
+
         upgradeRoomDB(currentRoomNumber ,upgradedRoomNumber);
         upgradeRoomHM(currentRoomNumber, upgradedRoomNumber);
 
     }
 
     public static void upgradeRoomDB(int currentRoomNumber, int upgradedRoomNumber) {
-        //TODO ändra // kolla på att ändra så att DB ändra rumsbookningen med customerId ist för BookingId
+
+        int customerId;
         int bookingId = 0;
         try {
-            Customer cust = roomMap.get(currentRoomNumber).getRenter();
-            int customerId = cust.getId();
+            if (roomMap.get(currentRoomNumber).getRenter() != null) {
+                Customer cust = roomMap.get(currentRoomNumber).getRenter();
+                customerId = cust.getId();
+            } else {
+                System.err.println("No room");
+                return;
+            }
             ResultSet rs = Database.getInstance().getSingleBooking(currentRoomNumber, customerId);
             while (rs.next()) {
                 bookingId = rs.getInt("bookingId");
             }
             Database.getInstance().upgradeBooking(bookingId, upgradedRoomNumber);
+            System.out.println("Room updated in Database");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Cant find booking with matching room number, cant upgrade");
         }
     }
 
     public static void upgradeRoomHM(int currentRoomNumber, int upgradedRoomNumber) {
 
-        if (roomMap.get(currentRoomNumber).isRented()) {
-            roomMap.get(currentRoomNumber).setRented(false);
-            Customer cust = roomMap.get(currentRoomNumber).getRenter();
-            roomMap.get(currentRoomNumber).setRenter(null);
-            roomMap.get(upgradedRoomNumber).setRenter(cust);
-            roomMap.get(upgradedRoomNumber).setRented(true);
-            System.out.println("Room updated in hashMap");
-        } else {
-            System.out.println("Can't upgrade room, no existing booking exists");
+        try {
+            if (roomMap.get(currentRoomNumber).getRenter() != null && roomMap.get(currentRoomNumber).isRented()) {
+                roomMap.get(currentRoomNumber).setRented(false);
+                Customer cust = roomMap.get(currentRoomNumber).getRenter();
+                roomMap.get(currentRoomNumber).setRenter(null);
+                roomMap.get(upgradedRoomNumber).setRenter(cust);
+                roomMap.get(upgradedRoomNumber).setRented(true);
+                System.out.println("Room updated in hashMap");
+            } else {
+                System.out.println("Can't upgrade room, no existing booking exists");
+            }
+        } catch (Exception e) {
+
         }
     }
 
     public static void checkOut() {
 
-        //TODO komma på ur man ska skicka
-        int bookingId = Input.askInt("Enter booking id for checkout");
+        int bookingId = Input.askInt("Enter booking id for checkout: ");
         LocalDate checkOutDate = LocalDate.now();
 
         try {

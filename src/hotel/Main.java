@@ -18,7 +18,7 @@ public class Main {
         //while (true) {
         //    CustomerHelper.searchAndSelectCustomerMenu();
         //}
-
+   //     RoomHelper.listAllBookings();
         MainMenu.mainMenu();
     }
 

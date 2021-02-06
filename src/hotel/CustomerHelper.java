@@ -57,7 +57,7 @@ public class CustomerHelper {
     }
 
     public static void searchCustomerID() {
-        System.out.println("Serch for customer");
+        System.out.println("Serch for customer: ");
         int ID = askInt("To search for customer, please enter customer ID");
         if (customers.isEmpty()) {
             System.out.println("No customers in register.");
@@ -69,21 +69,21 @@ public class CustomerHelper {
     }
 
     public static void updateCustomer() {
-        System.out.println("Update customer");
-        int ID = askInt("Enter customer ID");
+        System.out.println("Update customer: ");
+        int ID = askInt("Enter customer ID: ");
 
         System.out.println("");
-        System.out.println("1. Change first name");
-        System.out.println("2. Change last name");
-        System.out.println("3. Change phone number");
+        System.out.println("1. Change first name: ");
+        System.out.println("2. Change last name: ");
+        System.out.println("3. Change phone number: ");
         System.out.println("");
 
-        int choice = Input.askInt("Choose from menu to continue");
+        int choice = Input.askInt("Choose from menu to continue: ");
 
         switch (choice) {
 
             case 1:
-                String fname = askString("Enter new first name");
+                String fname = askString("Enter new first name: ");
                 for (Customer c : customers) {
                     if (c.getId() == ID) { //använda exeption ?
                         c.setFirstName(fname);
@@ -91,7 +91,7 @@ public class CustomerHelper {
                 }
                 break;
             case 2:
-                String lname = askString("Enter new last name");
+                String lname = askString("Enter new last name: ");
                 for (Customer c : customers) {
                     if (c.getId() == ID) { //använda exeption ?
                         c.setLastName(lname);
@@ -99,7 +99,7 @@ public class CustomerHelper {
                 }
                 break;
             case 3:
-                String number = askString("Enter new phone number");
+                String number = askString("Enter new phone number: ");
                 for (Customer c : customers) {
                     if (c.getId() == ID) { //använda exeption ?
                         c.setPhoneNumber(number);
@@ -112,7 +112,7 @@ public class CustomerHelper {
     }
 
     public static void deleteCustomer() throws SQLException {
-        int ID = askInt("To delete customer, enter customer ID:");
+        int ID = askInt("To delete customer, enter customer ID: ");
         if (customers.isEmpty()) {
             System.out.println("No customers in register.");
         } else {
