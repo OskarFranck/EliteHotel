@@ -54,7 +54,7 @@ public class Input {
     }
 
     public static String askString(String print) {
-        System.out.println(print);
+        System.out.print(print);
         return Input.getUserInputString();
     }
 

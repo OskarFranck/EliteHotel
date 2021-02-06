@@ -25,7 +25,7 @@ public class MainMenu {
                     break;
                 case 0:
                     CustomerHelper.customersToDatabase();
-                    System.out.println("Tack och välkommen åter");
+                    System.out.println("\nTack och välkommen åter!");
                     run = false;
                     break;
                 default:

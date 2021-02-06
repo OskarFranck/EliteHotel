@@ -88,6 +88,13 @@ public class RestoreFromDatabase {
     }
 
     public static void loadCustomers(boolean debug) {
+        // Restore customer id gen from database, only once during initial load.
+        try {
+            Customer.idGen = Database.getInstance().getStartingPointIdGenerator();
+        } catch(SQLException e){
+            System.out.println(e);
+        }
+
         int restored = 0;
         try {
             ResultSet r = Database.getInstance().getAllCustomers();

@@ -15,7 +15,9 @@ public class Main {
 //        RoomHelper.addRoomsToDataBase();
 
         // TODO (Oscar) - Testing here
-        CustomerHelper.searchAndSelectCustomerMenu();
+        //while (true) {
+        //    CustomerHelper.searchAndSelectCustomerMenu();
+        //}
 
         MainMenu.mainMenu();
     }

@@ -15,31 +15,22 @@ public class CustomerHelper {
     public static String phoneNumber;
 
     public static void registerNewCustomer() throws SQLException {
-        boolean goOn = true;
-        while (goOn) {
-            boolean run = true;
-            firstName = askString("Enter first name:"); //Lägga till kontroll endast bokstäver, eller iaf ej blankt?
-
-            lastName = askString("Enter last name:");
-            phoneNumber = askString("Enter phone number"); //Begränsning antal tecken? regex bara 0-9 och vissa tecken?
+        while (true) {
+            firstName = askString("Enter first name: "); //Lägga till kontroll endast bokstäver, eller iaf ej blankt?
+            lastName = askString("Enter last name: ");
+            phoneNumber = askString("Enter phone number: "); //Begränsning antal tecken? regex bara 0-9 och vissa tecken?
 
             Customer cust = new Customer(firstName, lastName, phoneNumber);
-            //customers.add(cust); // Görs nu direkt i Customer-klassen i constructorn
-            //Behöver vi ha denna?
             System.out.println("New customer added to List Customers: " + cust.toString());
-            System.out.println("Add another customer ? Y/N"); //Kontroll finns att bara Y eller N.
-            while (run) {
 
-                String choice = sc.nextLine();
+            while (true) {
+                String choice = Input.askString("Add another customer? (Y/N): ");
                 if (choice.equalsIgnoreCase("Y")) {
-                    goOn = run;
-                    run = false;
+                    break; // Restart mainLoop
                 } else if (choice.equalsIgnoreCase("N")) {
-                    goOn = false;
-                    run = false;
+                    return; // Stop method
                 } else if (!choice.equalsIgnoreCase("y") && !choice.equalsIgnoreCase("n")) {
-                    System.out.println("Please enter Y or N:");
-                    run = true;
+                    System.out.println("Unknown input. Try again!");
                 }
             }
         }
@@ -131,10 +122,18 @@ public class CustomerHelper {
     }
 
     public static void customersToDatabase() throws SQLException {
+        int existing = 0;
+        int added = 0;
 
         for (Customer c : customers) {
-            Database.getInstance().addCustomer(c.getId(), c.getFirstName(), c.getLastName(), c.getPhoneNumber());
+            if (Database.getInstance().addCustomer(c.getId(), c.getFirstName(), c.getLastName(), c.getPhoneNumber())) {
+                added++;
+            } else {
+                existing++;
+            }
         }
+
+        System.out.println(added + " new customers added to the database, " + existing + " existing ignored.");
     }
 
     public static Customer getCustomer(int id) {
