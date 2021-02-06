@@ -35,7 +35,7 @@ CREATE TABLE Bill (
     complete BOOL NOT NULL
 );
 
-CREATE TABLE BillFoodItems (
+CREATE TABLE BillFoodItem (
 	billId INT, FOREIGN KEY (billId) REFERENCES Bill(billId),
     foodItemType VARCHAR(20), FOREIGN KEY (foodItemType) REFERENCES FoodItem(foodItemType)
 );
