@@ -21,19 +21,19 @@ public class Customer {
     //Den här konstruktorn används när nya customers skapas från menyval
     //Hämtar högsta kundId:t från DB och använder som startpunkt till idgeneratorn.
     public Customer(String firstName, String lastName, String phoneNumber) {
-        try{
-            idGen = Database.getInstance().getStartingPointIdGenerator();
-        }catch(SQLException e){
-            System.out.println(e);
-        }
-        this.id = idGen +1;
-        idGen ++;
+        ++idGen;
+        this.id = idGen;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
 
         // Lägg till customer i listan
         CustomerHelper.customers.add(this);
+        try {
+            Database.getInstance().addCustomer(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
@@ -72,5 +72,10 @@ public class Customer {
     public String toString() {
         return "Customer: " + "Id: " + id + ",  First name: " + firstName + ", "
                 + "Last name: " + lastName + ", Phone number: " + phoneNumber ;
-    }    
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
 }
