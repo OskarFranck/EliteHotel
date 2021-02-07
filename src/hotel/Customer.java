@@ -1,27 +1,34 @@
-
 package hotel;
 
+import java.sql.SQLException;
 
 public class Customer {
-    
+
     private int id;
-   // private static int roomNr;
-   // private String food;
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    static int idGen;
     
-    static int idGenerator = 1;
-    
-    public Customer() {
+    //Denna konstruktor används när customers hämtas från databasen
+    public Customer(int dbId, String dbFName, String dbLName,String dbPhoneNr){
+        this.id = dbId;
+        this.firstName = dbFName;
+        this.lastName = dbLName;
+        this.phoneNumber = dbPhoneNr;
     }
-
+    
+    //Den här konstruktorn används när nya customers skapas från menyval
+    //Hämtar högsta kundId:t från DB och använder som startpunkt till idgeneratorn.
     public Customer(String firstName, String lastName, String phoneNumber) {
-        this.id = idGenerator;
-        idGenerator ++;
+        ++idGen;
+        this.id = idGen;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+
+        // Lägg till customer i listan
+        CustomerHelper.customers.add(this);
     }
 
     public int getId() {
@@ -61,9 +68,9 @@ public class Customer {
         return "Customer: " + "Id: " + id + ",  First name: " + firstName + ", "
                 + "Last name: " + lastName + ", Phone number: " + phoneNumber ;
     }
-    
-    
-    
-    
-    
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
 }

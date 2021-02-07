@@ -6,7 +6,6 @@ public class MainMenu {
 
     public static void mainMenu() throws SQLException{
         System.out.println("Start menu Elite Hotel\n");
-
         int choice;
         boolean run = true; 
         do {
@@ -14,7 +13,7 @@ public class MainMenu {
             System.out.println("2. Customer");
             System.out.println("0. Exit program\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
@@ -23,6 +22,11 @@ public class MainMenu {
                 case 2:
                     customerMenu();
                     break;
+                case 0:
+                    CustomerHelper.customersToDatabase();
+                    System.out.println("\nTack och välkommen åter!");
+                    run = false;
+                    break;
                 default:
                     run = false; 
                     break;
@@ -30,7 +34,7 @@ public class MainMenu {
         } while (choice < 0 || choice > 2 || run); //info tex felaktig inmating
     }
     private static void receptionistMenu() throws SQLException{
-        System.out.println("Employee menu\n");
+        System.out.println("Receptionist menu\n");
 
         int choice;
         boolean run = true; //ändrat från true
@@ -44,7 +48,7 @@ public class MainMenu {
             System.out.println("7. Show bill");
             System.out.println("0. Back to main menu\n");
 
-            choice = Input.askInt("Choose for menu to continue");
+            choice = Input.askInt("Choose form menu to continue: ");
 
             switch (choice) {
                 case 1:
@@ -63,7 +67,7 @@ public class MainMenu {
                     orderFood(selectRoomForFoodOrder());
                     break;
                 case 6:
-                    checkout();
+                    RoomHelper.checkOut();
                     break;
                 case 7:
                     showBill();
@@ -75,6 +79,7 @@ public class MainMenu {
         } while (choice < 0 || choice > 7 || run);
 
     }
+
     private static void registerNewCustomer() {
         
     }
@@ -84,26 +89,27 @@ public class MainMenu {
     private static void showBill() {
 
     }
-    private static void handleCustomers() {
+    private static void handleCustomers() throws SQLException {
         System.out.println("Handle customers\n");
 
         int choice;
         boolean run = true;
         do {
-            System.out.println("1. Search customer");
+            System.out.println("1. Display customer details");
             System.out.println("2. List all customers");
             System.out.println("3. Update customer info");
             System.out.println("4. Delete customer");
             System.out.println("0. Back to employee menu\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
-                    CustomerHelper.searchCustomerID();
+                    //CustomerHelper.searchCustomerID();
                     break;
                 case 2:
                     CustomerHelper.listAllCustomers();
+                   // Database.getInstance().getStartingPointIdGenerator();
                     break;
                 case 3:
                     CustomerHelper.updateCustomer();
@@ -128,6 +134,8 @@ public class MainMenu {
     }
 
     private static void customerMenu() throws SQLException {
+        //TODO should customer enter custID so they only can do thing in there name?
+
         System.out.println("Customer menu\n");
 
         int choice;
@@ -139,7 +147,7 @@ public class MainMenu {
             System.out.println("4. Checkout");
             System.out.println("0. Back to main menu\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
@@ -182,7 +190,7 @@ public class MainMenu {
             System.out.println("4. Order Drink - (" + Food.FoodMenuItem.DRINK.getPrice() + " kr)");
             System.out.println("5. Go back to main menu\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:

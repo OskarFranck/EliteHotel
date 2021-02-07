@@ -35,6 +35,7 @@ public class Input {
         } while (run);
         return userInput;
     }
+    
     public static double getUserInputDouble() {
         String userInput;
         double parseInput = 0;
@@ -53,12 +54,12 @@ public class Input {
     }
 
     public static String askString(String print) {
-        System.out.println(print);
+        System.out.print(print);
         return Input.getUserInputString();
     }
 
     public static int askInt(String print) {
-        System.out.println(print);
+        System.out.print(print);
         return Input.getUserInputInt();
     }
 

@@ -21,7 +21,7 @@ public class Room {
         return roomType;
     }
 
-    public boolean getRented() {
+    public boolean isRented() {
         return rented;
     }
 
