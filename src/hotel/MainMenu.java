@@ -206,8 +206,11 @@ public class MainMenu {
             return;
         } // Jump out if no room was selected previous
         int roomNumber = room.getRoomNumber();
-
-        // TODO - Fix "Bill to Room" connection and sort adding items to the bill given a Room object.
+        Bill roomBill = RoomHelper.getActiveBillMap().get(room.getRoomNumber());
+        if (roomBill == null) {
+            System.err.println("Error: room has no bill - something has gone very wrong!");
+            return;
+        }
 
         System.out.println("Order food menu\n");
         int choice;
@@ -224,19 +227,19 @@ public class MainMenu {
             switch (choice) {
                 case 1:
                     System.out.println("A sandwich has been ordered for Room #" + roomNumber + ".\n");
-                    // TODO - Add a sandwich object to the customer bill
+                    roomBill.add(new Food(Food.FoodMenuItem.SANDWICH));
                     break;
                 case 2:
                     System.out.println("A pasta dish has been ordered for Room #" + roomNumber + ".\n");
-                    // TODO - Add a pasta object to the customer bill
+                    roomBill.add(new Food(Food.FoodMenuItem.PASTA));
                     break;
                 case 3:
                     System.out.println("A noodles has been ordered for Room #" + roomNumber + ".\n");
-                    // TODO - Add a noodle object to the customer bill
+                    roomBill.add(new Food(Food.FoodMenuItem.NOODLES));
                     break;
                 case 4:
                     System.out.println("A drink has been ordered for Room #" + roomNumber + ".\n");
-                    // TODO - Add a drink object to the customer bill
+                    roomBill.add(new Food(Food.FoodMenuItem.DRINK));
                     break;
                 default:
                     run = false;
@@ -245,8 +248,8 @@ public class MainMenu {
         } while (choice < 0 || choice > 4 || run);
     }
 
-    private static Room selectRoomForFoodOrder() {
-        System.out.println("Select your room first for food order");
+    private static Room selectRoom(String menuHeader) {
+        System.out.println(menuHeader);
 
         while (true) {
             System.out.println("\n1. Enter your room number");
@@ -284,7 +287,7 @@ public class MainMenu {
                     }
 
                     System.out.println("Room #" + room.getRoomNumber() + " found.");
-                    String input = Input.askString("Continue with ordering to this room? (Y/N): ");
+                    String input = Input.askString("Continue with this room? (Y/N): ");
                     while (true) {
                         if (input.equalsIgnoreCase("y")) {
                             return room;

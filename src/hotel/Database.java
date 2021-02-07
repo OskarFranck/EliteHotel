@@ -391,13 +391,13 @@ public class Database {
             while (resultSet.next()) {
                 if (bill == null) {
                     // Create the Bill-object with the retrieved Room number, once.
-                    bill = new Bill(resultSet.getInt("roomNumber"));
+                    bill = new Bill(resultSet.getInt("roomNumber"), resultSet.getInt("billId"));
                     if(resultSet.getBoolean("complete")) {
                         bill.setCompleted(true);
                     }
                 }
                 String foodItemType = resultSet.getString("foodItemType");
-                bill.add(new Food(Food.FoodMenuItem.valueOf(foodItemType)));
+                bill.restoreAdd(new Food(Food.FoodMenuItem.valueOf(foodItemType))); // TODO - Här både läser och skriver den till databas (KLAR?)
             }
 
             if (bill == null) {
@@ -440,6 +440,21 @@ public class Database {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean upgradeBill(int billId, int newRoomNumber) throws SQLException {
+        try {
+            PreparedStatement statement = sqlConnection.prepareStatement("UPDATE Bill SET roomNumber = ? WHERE billId = ?");
+            statement.setInt(1, newRoomNumber);
+            statement.setInt(2, billId);
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error: Could not upgrade bill in database");
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
 }

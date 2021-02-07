@@ -91,7 +91,6 @@ public class CustomerHelper {
                     customer.setPhoneNumber(askString("Enter new phone number: "));
                     break;
                 case 0:
-                    // TODO - WARNING! Oscar fixade här nyss, kanske inte funkar helt korrekt
                     try {
                         Database.getInstance().updateCustomer(customer);
                     } catch (SQLException e) {

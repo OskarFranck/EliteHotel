@@ -125,7 +125,11 @@ public class RoomHelper {
             }
             getRoomMap().get(addRoomNumber).setRented(true);
             getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
-            Bill bill = new Bill(addRoomNumber); // TODO - Store this somewhere? YES HASHMAP
+
+            // Create a new bill for this booking
+            Bill bill = new Bill(addRoomNumber);
+            activeBillMap.put(addRoomNumber, bill);
+
             System.out.println("Booking added to hashMap");
         } else {
             // TODO - hantera att bokning frågar efter ett available room ist för att gå vidare
@@ -218,7 +222,6 @@ public class RoomHelper {
 
     public static void upgradeRoom() {
 
-        // TODO - Flytta bill vid byte av rum.
         getAvailableOrUnavailableRooms(false).forEach(room -> {
             if (room.getRenter() == null) {
                 System.out.println("Room #" + room.getRoomNumber() + ", Unknown guest");
@@ -240,10 +243,20 @@ public class RoomHelper {
         int upgradedRoomNumber = getOnlyExistingAndAvailableRoom();
 
         //TODO Badly handled nullpointerexception
-        upgradeRoomDB(currentRoomNumber ,upgradedRoomNumber);
+        upgradeRoomDB(currentRoomNumber, upgradedRoomNumber);
         upgradeRoomHM(currentRoomNumber, upgradedRoomNumber);
 
-        // TODO - Move bill from current room to new room
+        // TODO - Move bill from current room to new room (KLAR? Behöver testas)
+        // TODO - Bill stannnar kvar på samma som tidigare
+        Bill currentBill = activeBillMap.get(currentRoomNumber);
+        currentBill.setRoomNumber(upgradedRoomNumber);
+        activeBillMap.put(upgradedRoomNumber, currentBill);
+        activeBillMap.remove(currentRoomNumber);
+        try {
+            Database.getInstance().upgradeBill(currentBill.getId(), upgradedRoomNumber);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -293,14 +306,43 @@ public class RoomHelper {
         }
     }
 
-    public static void checkOut() {
+    public static void checkOut(Room room) {
         //TODO Checkout is done with booking id, still need to get bookingslist as Array from DB
         // TODO Använd rums nummmert för att hämta bill och sätta bill till completed och ta rums referansen och tabort from Billmap
-        int bookingId = Input.askInt("Enter booking id for checkout: ");
+        if (room == null) {
+            return;
+        }
+
+        int bookingId = 0;
+        try {
+            ResultSet rs = Database.getInstance().getSingleBooking(room.getRoomNumber(), room.getRenter().getId());
+            while (rs.next()) {
+                bookingId = rs.getInt("bookingId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (bookingId == 0) {
+            System.err.println("No booking found on room");
+            return;
+        }
+
         LocalDate checkOutDate = LocalDate.now();
 
         try {
+            // Check-out room
             Database.getInstance().checkOutBooking(bookingId, checkOutDate);
+            room.setRented(false);
+            room.setRenter(null);
+
+            // Check-out bill
+            Bill bookingBill = activeBillMap.get(room.getRoomNumber());
+            bookingBill.setCompleted(true);
+            Database.getInstance().checkOutBill(bookingBill.getId());
+
+            System.out.println("Check-out complete for room #" + room.getRoomNumber());
+            // TODO - Skriv ut kvitto
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

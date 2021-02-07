@@ -8,15 +8,23 @@ public class Bill {
     final private ArrayList<BillableService> billItems = new ArrayList<>();
     private int roomNumber;
     private boolean completed = false;
+    private int id;
 
+    // Use this to create a new bill both in database and running program
     public Bill(int roomNumber) {
         this.roomNumber = roomNumber;
         try {
-            Database.getInstance().newBill(roomNumber);
+            this.id = Database.getInstance().newBill(roomNumber);
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // Use this to restore from database
+    public Bill(int roomNumber, int id) {
+        this.roomNumber = roomNumber;
+        this.id = id;
     }
 
     public int getRoomNumber() {
@@ -35,7 +43,21 @@ public class Bill {
         this.completed = completed;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void add(BillableService service) {
+        billItems.add(service);
+        try {
+            Food food = (Food) service;
+            Database.getInstance().addFoodToBill(id, food);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void restoreAdd(BillableService service) {
         billItems.add(service);
     }
 
