@@ -4,10 +4,10 @@ import java.sql.SQLException;
 
 public class MainMenu {
 
-    public static void mainMenu() throws SQLException{
+    public static void mainMenu() throws SQLException {
         System.out.println("Start menu Elite Hotel\n");
         int choice;
-        boolean run = true; 
+        boolean run = true;
         do {
             System.out.println("1. Receptionist");
             System.out.println("2. Customer");
@@ -28,12 +28,13 @@ public class MainMenu {
                     run = false;
                     break;
                 default:
-                    run = false; 
+                    run = false;
                     break;
             }
         } while (choice < 0 || choice > 2 || run); //info tex felaktig inmating
     }
-    private static void receptionistMenu() throws SQLException{
+
+    private static void receptionistMenu() throws SQLException {
         System.out.println("Receptionist menu\n");
 
         int choice;
@@ -64,10 +65,10 @@ public class MainMenu {
                     RoomHelper.upgradeRoom();
                     break;
                 case 5:
-                    orderFood(selectRoomForFoodOrder());
+                    orderFood(selectRoom("Select room to order food too: "));
                     break;
                 case 6:
-                    RoomHelper.checkOut();
+                    RoomHelper.checkOut(selectRoom("Select room to checkout: "));
                     break;
                 case 7:
                     showBill();
@@ -82,14 +83,17 @@ public class MainMenu {
     }
 
     private static void registerNewCustomer() {
-        
+
     }
+
     private static void bookOrUpgradeRoom() {
 
     }
+
     private static void showBill() {
 
     }
+
     private static void handleCustomers() throws SQLException {
         System.out.println("Handle customers\n");
 
@@ -126,24 +130,27 @@ public class MainMenu {
                         CustomerHelper.updateCustomer(updateCustomer);
                     }
                     break;
-                 case 4:
-                     Customer deleteCustomer = CustomerHelper.searchAndSelectCustomerMenu();
-                     if (deleteCustomer != null) {
-                         CustomerHelper.deleteCustomer(deleteCustomer);
-                     }
-                    break;   
+                case 4:
+                    Customer deleteCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (deleteCustomer != null) {
+                        CustomerHelper.deleteCustomer(deleteCustomer);
+                    }
+                    break;
                 default:
                     run = false;
                     break;
             }
         } while (choice < 0 || choice > 4 || run);
     }
+
     private static void searchCustomer() {
 
     }
+
     private static void updateCustomer() {
 
     }
+
     private static void deleteCustomer() {
 
     }
@@ -170,10 +177,10 @@ public class MainMenu {
                     RoomHelper.bookRoom();
                     break;
                 case 3:
-                    orderFood(selectRoomForFoodOrder());
+                    orderFood(selectRoom("Select room to order food too: "));
                     break;
                 case 4:
-                    checkout();
+                    RoomHelper.checkOut(selectRoom("Select room to checkout: "));
                     break;
                 default:
                     run = false;
@@ -181,14 +188,23 @@ public class MainMenu {
             }
         } while (choice < 0 || choice > 4 || run);
     }
+
     private static void showRooms() {
-//        RoomHelper.getRoomMap().entrySet().stream().filter(rs -> rs.getValue().)
+        RoomHelper.getRoomMap().entrySet().forEach(rs -> System.out.println("Room: " + rs.getValue().getRoomType().name() +
+                ", Bed: " + rs.getValue().getRoomType().typeOfBed() + "size, " +
+                ", AC: " + rs.getValue().getRoomType().hasAC() +
+                ", No.of beds: " + rs.getValue().getRoomType().getNumberOfBeds() +
+                ", Daily charge: " + rs.getValue().getRoomType().getDailyCharge()));
     }
+
     private static void bookRoom() {
 
     }
+
     private static void orderFood(Room room) {
-        if (room == null) { return; } // Jump out if no room was selected previous
+        if (room == null) {
+            return;
+        } // Jump out if no room was selected previous
         int roomNumber = room.getRoomNumber();
 
         // TODO - Fix "Bill to Room" connection and sort adding items to the bill given a Room object.
@@ -241,7 +257,7 @@ public class MainMenu {
                 case 1:
                     int inputNumber = Input.askInt("Room number: ");
                     if (RoomHelper.getRoomMap().get(inputNumber) == null) {
-                        System.err.println("Room #" + inputNumber +" does not exists. Please try again!");
+                        System.err.println("Room #" + inputNumber + " does not exists. Please try again!");
                         break;
                     }
                     return RoomHelper.getRoomMap().get(inputNumber);
@@ -282,9 +298,5 @@ public class MainMenu {
                     return null;
             }
         }
-    }
-
-    private static void checkout() {
-
     }
 }

@@ -3,6 +3,7 @@ package hotel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -304,6 +305,12 @@ public class RoomHelper {
             throwables.printStackTrace();
         }
     }
+
+    public static void daysStayed() {
+
+    }
+
+    // TODO metod som kolla hur många dagar som gått mellan in och ut checking
 
     public static void addRoomsToDataBase() {
 

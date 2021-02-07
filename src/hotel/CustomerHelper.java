@@ -14,6 +14,7 @@ public class CustomerHelper {
     public static String lastName;
     public static String phoneNumber;
 
+    // TODO Ändra så att det är try catch ist för att metoder kastar exception
     public static void registerNewCustomer() throws SQLException {
         while (true) {
             firstName = askString("Enter first name: "); //Lägga till kontroll endast bokstäver, eller iaf ej blankt?
