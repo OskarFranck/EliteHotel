@@ -13,6 +13,8 @@ public class Main {
 
         // TODO - Ta bort demo data här
         // ## Fyller programmet och databasen med demo kunder, rum och bokningar - kan köras en gång
+        //RoomHelper.addCustomersToDataBase();
+        //RoomHelper.addRoomsToDataBase();
 
         // TODO (Oscar) - Testing here
         //while (true) {

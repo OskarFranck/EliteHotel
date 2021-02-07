@@ -23,7 +23,7 @@ public class MainMenu {
                     customerMenu();
                     break;
                 case 0:
-                    CustomerHelper.customersToDatabase();
+                    // CustomerHelper.customersToDatabase(); // Behövs inte längre
                     System.out.println("\nTack och välkommen åter!");
                     run = false;
                     break;
@@ -105,17 +105,30 @@ public class MainMenu {
 
             switch (choice) {
                 case 1:
-                    //CustomerHelper.searchCustomerID();
+                    //CustomerHelper.searchCustomerID(); // TODO - Kan vi ta bort denna?
+                    Customer displayCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (displayCustomer != null) {
+                        System.out.println("Customer details:");
+                        System.out.println("ID: " + displayCustomer.getId());
+                        System.out.println("Name: " + displayCustomer.getFullName());
+                        System.out.println("Phone number: " + displayCustomer.getPhoneNumber());
+                        System.out.println("Currently checked-in:"); // TODO - Lägg till så att den printar eventuell booking
+                    }
                     break;
                 case 2:
                     CustomerHelper.listAllCustomers();
-                   // Database.getInstance().getStartingPointIdGenerator();
                     break;
                 case 3:
-                    CustomerHelper.updateCustomer();
+                    Customer updateCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (updateCustomer != null) {
+                        CustomerHelper.updateCustomer(updateCustomer);
+                    }
                     break;
                  case 4:
-                    CustomerHelper.deleteCustomer();
+                     Customer deleteCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                     if (deleteCustomer != null) {
+                         CustomerHelper.deleteCustomer(deleteCustomer);
+                     }
                     break;   
                 default:
                     run = false;
