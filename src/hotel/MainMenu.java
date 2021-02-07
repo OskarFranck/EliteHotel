@@ -1,7 +1,6 @@
 package hotel;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class MainMenu {
 
@@ -72,6 +71,7 @@ public class MainMenu {
                     break;
                 case 7:
                     showBill();
+                    // TODO - Show bill from database or from hashmap
                     break;
                 default:
                     run = false;
@@ -182,7 +182,7 @@ public class MainMenu {
         } while (choice < 0 || choice > 4 || run);
     }
     private static void showRooms() {
-
+//        RoomHelper.getRoomMap().entrySet().stream().filter(rs -> rs.getValue().)
     }
     private static void bookRoom() {
 
@@ -247,7 +247,7 @@ public class MainMenu {
                     return RoomHelper.getRoomMap().get(inputNumber);
                 case 2:
                     System.out.println("\nAll currently booked rooms:");
-                    RoomHelper.getAvailableRooms(false).forEach(room -> {
+                    RoomHelper.getAvailableOrUnavailableRooms(false).forEach(room -> {
                         if (room.getRenter() == null) {
                             System.out.println("Room #" + room.getRoomNumber() + ", Unknown guest");
                         } else {
