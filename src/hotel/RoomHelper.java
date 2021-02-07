@@ -29,40 +29,102 @@ public class RoomHelper {
     }
 
     public static void bookRoom() {
+        // TODO ändra så metod kolla att input data går att använda direkt efter input
+        int choice;
 
-        System.out.println("Rooms available for booking");
+        skip:
+        do {
+            System.out.println("1. List room available by room type");
+            System.out.println("2. List all available rooms");
+            System.out.println("0. Back to menu");
 
-        getAvailableRooms(true).forEach(room -> {
-            if (room.getRenter() == null) {
-                System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
-            } else {
-                System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
+            choice = Input.askInt("Choose from menu: ");
+
+            switch (choice) {
+                case 1:
+                    listRoomsByType();
+                    break skip;
+                case 2:
+                    getAvailableRooms(true).forEach(room -> {
+                        if (room.getRenter() == null) {
+                            System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
+                        } else {
+                            System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
+                        }
+                    });
+                    break skip;
+                default:
+                    return;
             }
-        });
+        } while (choice < 0 || choice > 2);
 
-        int addRoomNumber = Input.askInt("Enter room number: ");
-        int customerId = Input.askInt("Enter customer id: ");
-        LocalDate checkInDate = LocalDate.now();
+            int addRoomNumber = Input.askInt("Enter room number: ");
+            int customerId = Input.askInt("Enter customer id: ");
+            LocalDate checkInDate = LocalDate.now();
 
-        if (!getRoomMap().get(addRoomNumber).isRented()) {
-            try {
-                if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
-                    System.out.println("Booking added to DB");
+            if (!getRoomMap().get(addRoomNumber).isRented()) {
+                try {
+                    if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
+                        System.out.println("Booking added to DB");
+                    }
+                } catch (SQLException throwables) {
+
                 }
-            } catch (SQLException throwables) {
-
+                getRoomMap().get(addRoomNumber).setRented(true);
+                getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
+                System.out.println("Booking added to hashMap");
+            } else {
+                System.out.println("Could not add booking");
             }
-            getRoomMap().get(addRoomNumber).setRented(true);
-            getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
-            System.out.println("Booking added to hashMap");
-        } else {
-            System.out.println("Could not add booking");
+    }
+
+    public static void listRoomsByType() {
+        int choice;
+
+        System.out.println("1. Show all available Standard single rooms");
+        System.out.println("2. Show all available Standard double rooms");
+        System.out.println("3. Show all available Luxury single rooms");
+        System.out.println("4. Show all available Luxury double rooms");
+        System.out.println("5. Show all available Deluxe double rooms");
+
+        choice = Input.askInt("Choose from menu: ");
+        switch (choice) {
+            case 1:
+                getAvailableRooms(true, RoomType.STANDARD_SINGLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
+            case 2:
+                getAvailableRooms(true, RoomType.STANDARD_DOUBLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
+            case 3:
+                getAvailableRooms(true, RoomType.LUXURY_SINGLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
+            case 4:
+                getAvailableRooms(true, RoomType.LUXURY_DOUBLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
+            case 5:
+                getAvailableRooms(true, RoomType.DELUXE_DOUBLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
         }
     }
 
     public static void upgradeRoom() {
 
-        RoomHelper.getAvailableRooms(false).forEach(room -> {
+        getAvailableRooms(false).forEach(room -> {
             if (room.getRenter() == null) {
                 System.out.println("Room #" + room.getRoomNumber() + ", Unknown guest");
             } else {
@@ -72,7 +134,7 @@ public class RoomHelper {
 
         int currentRoomNumber = Input.askInt("Enter current room number: ");
 
-        RoomHelper.getAvailableRooms(true).forEach(room -> {
+        getAvailableRooms(true).forEach(room -> {
             if (room.getRenter() == null) {
                 System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
             } else {
@@ -82,6 +144,7 @@ public class RoomHelper {
 
         int upgradedRoomNumber = Input.askInt("Enter new room number: ");
 
+        //TODO Badly handled nullpointerexception
         upgradeRoomDB(currentRoomNumber ,upgradedRoomNumber);
         upgradeRoomHM(currentRoomNumber, upgradedRoomNumber);
 
@@ -131,7 +194,7 @@ public class RoomHelper {
     }
 
     public static void checkOut() {
-
+        //TODO Checkout is done with booking id, still need to get bookingslist as Array from DB
         int bookingId = Input.askInt("Enter booking id for checkout: ");
         LocalDate checkOutDate = LocalDate.now();
 
