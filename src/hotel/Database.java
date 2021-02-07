@@ -114,10 +114,11 @@ public class Database {
         }
 
         try {
-            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer (firstName, lastName, phoneNumber) VALUES (?,?,?)");
-            statement.setString(1, customer.getFirstName());
-            statement.setString(2, customer.getLastName());
-            statement.setString(3, customer.getPhoneNumber());
+            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer VALUES (?,?,?,?)");
+            statement.setInt(1, customer.getId());
+            statement.setString(2, customer.getFirstName());
+            statement.setString(3, customer.getLastName());
+            statement.setString(4, customer.getPhoneNumber());
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {

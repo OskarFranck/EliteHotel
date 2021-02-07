@@ -76,8 +76,8 @@ public class CustomerHelper {
         while (true) {
             System.out.println("\n1. Change first name");
             System.out.println("2. Change last name");
-            System.out.println("3. Change phone number\n");
-            System.out.println("0. Cancel and go back\n");
+            System.out.println("3. Change phone number");
+            System.out.println("0. Go back\n");
             int choice = Input.askInt("Choose from menu to continue: ");
             switch (choice) {
                 case 1:
@@ -133,14 +133,25 @@ public class CustomerHelper {
         }*/
     }
 
-    public static void deleteCustomer() throws SQLException {
-        int ID = askInt("To delete customer, enter customer ID:");
+    public static void deleteCustomer(Customer customer) throws SQLException {
+        while (true) {
+            String input = askString("Do you want to delete customer " + customer.getFullName() + "? (Y/N) :");
+            if (input.equalsIgnoreCase("y")) {
+                Database.getInstance().deleteCustomer(customer.getId());
+            } else if (input.equalsIgnoreCase("n"))  {
+                return;
+            } else {
+                System.out.println("Unknown input. Try again!");
+            }
+        }
+
+        /*int ID = askInt("To delete customer, enter customer ID:");
         if (customers.isEmpty()) {
             System.out.println("No customers in register.");
         } else {
             customers.removeIf(c -> c.getId() == ID);
             Database.getInstance().deleteCustomer(ID);
-        }
+        }*/
     }
 
     public static void customersToDatabase() throws SQLException {
