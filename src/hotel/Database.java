@@ -108,20 +108,41 @@ public class Database {
      * @return boolean success/failure
      * @throws SQLException -
      */
-    public boolean addCustomer(Customer customer) throws SQLException {
+    public boolean addCustomer(Customer customer) {
         if (customer.getFirstName().isEmpty() || customer.getLastName().isEmpty()) {
             return false;
         }
 
         try {
-            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer (firstName, lastName, phoneNumber) VALUES (?,?,?)");
-            statement.setString(1, customer.getFirstName());
-            statement.setString(2, customer.getLastName());
-            statement.setString(3, customer.getPhoneNumber());
+            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Customer VALUES (?,?,?,?)");
+            statement.setInt(1, customer.getId());
+            statement.setString(2, customer.getFirstName());
+            statement.setString(3, customer.getLastName());
+            statement.setString(4, customer.getPhoneNumber());
             statement.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
             return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateCustomer(Customer updatedCustomer) {
+        try {
+            PreparedStatement statement = sqlConnection.prepareStatement("UPDATE Customer SET firstName = ?, lastName = ?, phoneNumber = ? WHERE customerId = ?");
+            statement.setString(1, updatedCustomer.getFirstName());
+            statement.setString(2, updatedCustomer.getLastName());
+            statement.setString(3, updatedCustomer.getPhoneNumber());
+            statement.setInt(4, updatedCustomer.getId());
+            statement.executeUpdate();
+            return true;
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return false;
+        } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
         }
     }
 
