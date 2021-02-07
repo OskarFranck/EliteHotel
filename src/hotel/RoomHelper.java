@@ -76,17 +76,23 @@ public class RoomHelper {
 
     public static int getOnlyExistingAndAvailableRoom() {
         while (true) {
-            int existingRoom = Input.askInt("Enter room number: ");
-            Room room = roomMap.get(existingRoom);
-            if (room == null) {
+            try {
+
+                int existingRoom = Input.askInt("Enter room number: ");
+                Room room = roomMap.get(existingRoom);
+                if (room == null) {
+                    throw new RoomDoesNotExistException("Cant find room, try again");
+                }
+                if (getAvailableOrUnavailableRooms(false).contains(room)) {
+                    throw new RoomAlreadyBookedException("Room is already booked, try again");
+                }
+                return room.getRoomNumber();
+
+            } catch (RoomDoesNotExistException e) {
                 System.out.println("Cant find room, try again");
-                continue; // Restart loop
-            }
-            if (getAvailableOrUnavailableRooms(false).contains(room)) {
+            } catch (RoomAlreadyBookedException e) {
                 System.out.println("Room is already booked, try again");
-                continue; // Restart loop
             }
-            return room.getRoomNumber();
         }
     }
 
@@ -118,11 +124,9 @@ public class RoomHelper {
 
         if (!getRoomMap().get(addRoomNumber).isRented()) {
             try {
-                if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
-                    System.out.println("Booking added to DB");
-                }
+                Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate);
             } catch (SQLException throwables) {
-
+                throwables.printStackTrace();
             }
             getRoomMap().get(addRoomNumber).setRented(true);
             getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
@@ -131,7 +135,7 @@ public class RoomHelper {
             Bill bill = new Bill(addRoomNumber);
             activeBillMap.put(addRoomNumber, bill);
 
-            System.out.println("Booking added to hashMap");
+            System.out.println("\nBooked " + cust.getFullName() + " to room #" + addRoomNumber);
         } else {
             // TODO - hantera att bokning frågar efter ett available room ist för att gå vidare
             System.out.println("Could not add booking");
