@@ -38,7 +38,7 @@ public class MainMenu {
         System.out.println("Receptionist menu\n");
 
         int choice;
-        boolean run = false; //ändrat från true
+        boolean run = true; //ändrat till false från true (varför? Jag behöver att den är true -Oscar)
         do {
             System.out.println("1. Register new customer");
             System.out.println("2. Handle customers");
@@ -201,9 +201,9 @@ public class MainMenu {
             System.out.println("2. Order Pasta - (" + Food.FoodMenuItem.PASTA.getPrice() + " kr)");
             System.out.println("3. Order Noodles - (" + Food.FoodMenuItem.NOODLES.getPrice() + " kr)");
             System.out.println("4. Order Drink - (" + Food.FoodMenuItem.DRINK.getPrice() + " kr)");
-            System.out.println("5. Go back to main menu\n");
+            System.out.println("0. Go back to main menu\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
@@ -226,7 +226,7 @@ public class MainMenu {
                     run = false;
                     break;
             }
-        } while (choice < 1 || choice > 5 || run);
+        } while (choice < 0 || choice > 4 || run);
     }
 
     private static Room selectRoomForFoodOrder() {
@@ -235,6 +235,7 @@ public class MainMenu {
         while (true) {
             System.out.println("\n1. Enter your room number");
             System.out.println("2. View all currently booked rooms");
+            System.out.println("3. Select room from customer booking");
             System.out.println("0. Cancel and go back");
             switch (Input.getUserInputInt()) {
                 case 1:
@@ -254,6 +255,29 @@ public class MainMenu {
                         }
                     });
                     break;
+                case 3:
+                    Customer customer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (customer == null) {
+                        break;
+                    }
+
+                    Room room = RoomHelper.findCustomersRoom(customer);
+                    if (room == null) {
+                        System.out.println("Customer is not checked into any room. Try again.");
+                        break;
+                    }
+
+                    System.out.println("Room #" + room.getRoomNumber() + " found.");
+                    String input = Input.askString("Continue with ordering to this room? (Y/N): ");
+                    while (true) {
+                        if (input.equalsIgnoreCase("y")) {
+                            return room;
+                        } else if (input.equalsIgnoreCase("n")) {
+                            return null;
+                        } else {
+                            System.out.println("Unknown command. Try again!");
+                        }
+                    }
                 case 0:
                     return null;
             }
