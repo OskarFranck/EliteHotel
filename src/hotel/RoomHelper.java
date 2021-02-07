@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -30,64 +29,173 @@ public class RoomHelper {
     }
 
     public static void bookRoom() {
+        // TODO ändra så metod kolla att input data går att använda direkt efter input
+        int choice;
 
-        //TODO Ändra så att metoden hämtar info om rum / bookningar från hashmap ist för databas
-        //TODO Hämta rum från hashmap, på rum sätt setrented till true, och koppla kunden till rummet (renter) hämta lista från customerHelper
+        skip:
+        do {
+            System.out.println("1. List room available by room type");
+            System.out.println("2. List all available rooms");
+            System.out.println("0. Back to menu");
 
+            choice = Input.askInt("Choose from menu: ");
 
-        getRoomMap().entrySet().forEach(enter -> {
-            System.out.println(enter.getKey() + " " + enter.getValue());
-        });
-        System.out.println(roomMap.size());
-
-        int addRoomNumber = Input.askInt("Enter room number: ");
-        int customerId = Input.askInt("Enter customer id: ");
-        LocalDate checkInDate = LocalDate.now();
-
-        if (!getRoomMap().get(addRoomNumber).isRented()) {
-            try {
-                if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
-                    System.out.println("Booking added to DB");
-                }
-            } catch (SQLException throwables) {
-
+            switch (choice) {
+                case 1:
+                    listRoomsByType();
+                    break skip;
+                case 2:
+                    getAvailableRooms(true).forEach(room -> {
+                        if (room.getRenter() == null) {
+                            System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
+                        } else {
+                            System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
+                        }
+                    });
+                    break skip;
+                default:
+                    return;
             }
-            getRoomMap().get(addRoomNumber).setRented(true);
-            getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
-            System.out.println("Booking added to hashMap");
-        } else {
-            System.out.println("Could not add booking");
+        } while (choice < 0 || choice > 2);
+
+            int addRoomNumber = Input.askInt("Enter room number: ");
+            int customerId = Input.askInt("Enter customer id: ");
+            LocalDate checkInDate = LocalDate.now();
+
+            if (!getRoomMap().get(addRoomNumber).isRented()) {
+                try {
+                    if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
+                        System.out.println("Booking added to DB");
+                    }
+                } catch (SQLException throwables) {
+
+                }
+                getRoomMap().get(addRoomNumber).setRented(true);
+                getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
+                System.out.println("Booking added to hashMap");
+            } else {
+                System.out.println("Could not add booking");
+            }
+    }
+
+    public static void listRoomsByType() {
+        int choice;
+
+        System.out.println("1. Show all available Standard single rooms");
+        System.out.println("2. Show all available Standard double rooms");
+        System.out.println("3. Show all available Luxury single rooms");
+        System.out.println("4. Show all available Luxury double rooms");
+        System.out.println("5. Show all available Deluxe double rooms");
+
+        choice = Input.askInt("Choose from menu: ");
+        switch (choice) {
+            case 1:
+                getAvailableRooms(true, RoomType.STANDARD_SINGLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
+            case 2:
+                getAvailableRooms(true, RoomType.STANDARD_DOUBLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
+            case 3:
+                getAvailableRooms(true, RoomType.LUXURY_SINGLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
+            case 4:
+                getAvailableRooms(true, RoomType.LUXURY_DOUBLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
+            case 5:
+                getAvailableRooms(true, RoomType.DELUXE_DOUBLE).forEach(room -> {
+                    if (room.getRenter() == null) {
+                        System.out.println("Room #" + room.getRoomNumber() + ", Available");
+                    }
+                });
         }
     }
 
     public static void upgradeRoom() {
 
-        //TODO When upgrading room can be booked more then once. function exists in book room
-        //TODO hämta gammalt rum från hashmap och sätt setRented till false, koppla bort kund koplingen(till null)
-        //TODO Hämta nya rummet från hashmap, på rum sätt setrented till true, och koppla kunden till rummet (renter) hämta från customerHelper
-        //TODO Flytta bill från gammla till nya rummet
+        getAvailableRooms(false).forEach(room -> {
+            if (room.getRenter() == null) {
+                System.out.println("Room #" + room.getRoomNumber() + ", Unknown guest");
+            } else {
+                System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
+            }
+        });
 
-        ArrayList availableRooms = getAvailableRooms(true);
+        int currentRoomNumber = Input.askInt("Enter current room number: ");
 
-//        searchInArray();
-//
-//        try {
-//            int bookingId = Input.askInt("Enter booking ID: ");
-//            int upgradedRoomNumber = Input.askInt("Enter new room number: ");
-//            if (getRoomMap().get(upgradedRoomNumber).isRented()) {
-//                if (Database.getInstance().upgradeBooking(bookingId, upgradedRoomNumber)) {
-//                    System.out.println("Room upgraded");
-//                }
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
+        getAvailableRooms(true).forEach(room -> {
+            if (room.getRenter() == null) {
+                System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
+            } else {
+                System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
+            }
+        });
+
+        int upgradedRoomNumber = Input.askInt("Enter new room number: ");
+
+        //TODO Badly handled nullpointerexception
+        upgradeRoomDB(currentRoomNumber ,upgradedRoomNumber);
+        upgradeRoomHM(currentRoomNumber, upgradedRoomNumber);
+
+    }
+
+    public static void upgradeRoomDB(int currentRoomNumber, int upgradedRoomNumber) {
+
+        int customerId;
+        int bookingId = 0;
+        try {
+            if (roomMap.get(currentRoomNumber).getRenter() != null) {
+                Customer cust = roomMap.get(currentRoomNumber).getRenter();
+                customerId = cust.getId();
+            } else {
+                System.err.println("No room");
+                return;
+            }
+            ResultSet rs = Database.getInstance().getSingleBooking(currentRoomNumber, customerId);
+            while (rs.next()) {
+                bookingId = rs.getInt("bookingId");
+            }
+            Database.getInstance().upgradeBooking(bookingId, upgradedRoomNumber);
+            System.out.println("Room updated in Database");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Cant find booking with matching room number, cant upgrade");
+        }
+    }
+
+    public static void upgradeRoomHM(int currentRoomNumber, int upgradedRoomNumber) {
+
+        try {
+            if (roomMap.get(currentRoomNumber).getRenter() != null && roomMap.get(currentRoomNumber).isRented()) {
+                roomMap.get(currentRoomNumber).setRented(false);
+                Customer cust = roomMap.get(currentRoomNumber).getRenter();
+                roomMap.get(currentRoomNumber).setRenter(null);
+                roomMap.get(upgradedRoomNumber).setRenter(cust);
+                roomMap.get(upgradedRoomNumber).setRented(true);
+                System.out.println("Room updated in hashMap");
+            } else {
+                System.out.println("Can't upgrade room, no existing booking exists");
+            }
+        } catch (Exception e) {
+
+        }
     }
 
     public static void checkOut() {
-
-        //TODO komma på ur man ska skicka
-        int bookingId = Input.askInt("Enter booking id for checkout");
+        //TODO Checkout is done with booking id, still need to get bookingslist as Array from DB
+        int bookingId = Input.askInt("Enter booking id for checkout: ");
         LocalDate checkOutDate = LocalDate.now();
 
         try {

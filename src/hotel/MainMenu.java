@@ -1,7 +1,6 @@
 package hotel;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class MainMenu {
 
@@ -38,7 +37,7 @@ public class MainMenu {
         System.out.println("Receptionist menu\n");
 
         int choice;
-        boolean run = false; //ändrat från true
+        boolean run = true; //ändrat från true
         do {
             System.out.println("1. Register new customer");
             System.out.println("2. Handle customers");
@@ -148,6 +147,8 @@ public class MainMenu {
     }
 
     private static void customerMenu() throws SQLException {
+        //TODO should customer enter custID so they only can do thing in there name?
+
         System.out.println("Customer menu\n");
 
         int choice;
@@ -202,7 +203,7 @@ public class MainMenu {
             System.out.println("4. Order Drink - (" + Food.FoodMenuItem.DRINK.getPrice() + " kr)");
             System.out.println("5. Go back to main menu\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:

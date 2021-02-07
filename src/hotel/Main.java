@@ -7,6 +7,8 @@ public class Main {
     public static void main(String[] args) throws SQLException {
 	// write your code here
 
+
+
         Database.getInstance(); // init database before main loop
 
         // TODO - Ta bort demo data här
@@ -18,7 +20,7 @@ public class Main {
         //while (true) {
         //    CustomerHelper.searchAndSelectCustomerMenu();
         //}
-
+   //     RoomHelper.listAllBookings();
         MainMenu.mainMenu();
     }
 
