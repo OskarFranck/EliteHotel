@@ -113,7 +113,8 @@ public class MainMenu {
                         System.out.println("ID: " + displayCustomer.getId());
                         System.out.println("Name: " + displayCustomer.getFullName());
                         System.out.println("Phone number: " + displayCustomer.getPhoneNumber());
-                        System.out.println("Currently checked-in:"); // TODO - Lägg till så att den printar eventuell booking
+                        Room customerRoom = RoomHelper.findCustomersRoom(displayCustomer);
+                        System.out.println("Currently checked-in: " + ((customerRoom != null) ? "Yes, Room #" + customerRoom.getRoomNumber() + "\n" : "No\n"));
                     }
                     break;
                 case 2:

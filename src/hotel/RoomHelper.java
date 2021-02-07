@@ -165,4 +165,16 @@ public class RoomHelper {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Attempts to find a room that has a booking with that customer. Returns null if no room was found for that customer.
+     * @param customer Customer-object to look for using it's ID
+     * @return Room with customer as current renter, or null
+     */
+    public static Room findCustomersRoom(Customer customer) {
+        return getAvailableRooms(false).stream()
+                .filter(room -> room.getRenter().getId() == customer.getId())
+                .findFirst()
+                .orElse(null);
+    }
+
 }
