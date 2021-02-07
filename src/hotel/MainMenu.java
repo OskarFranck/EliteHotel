@@ -190,6 +190,8 @@ public class MainMenu {
     }
 
     private static void showRooms() {
+
+        // TODO Printar alla rum inte 1
         RoomHelper.getRoomMap().entrySet().forEach(rs -> System.out.println("Room: " + rs.getValue().getRoomType().name() +
                 ", Bed: " + rs.getValue().getRoomType().typeOfBed() + "size, " +
                 ", AC: " + rs.getValue().getRoomType().hasAC() +

@@ -1,7 +1,6 @@
 package hotel;
 
 import static hotel.Input.*;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -9,13 +8,11 @@ import java.util.stream.Collectors;
 public class CustomerHelper {
 
     public static List<Customer> customers = new ArrayList<>();
-    // public static List<Customer> custFromDB = new ArrayList<>();
     public static String firstName;
     public static String lastName;
     public static String phoneNumber;
 
-    // TODO Ändra så att det är try catch ist för att metoder kastar exception
-    public static void registerNewCustomer() throws SQLException {
+    public static void registerNewCustomer() {
         while (true) {
             firstName = askString("Enter first name: "); //Lägga till kontroll endast bokstäver, eller iaf ej blankt?
             lastName = askString("Enter last name: ");
@@ -37,7 +34,7 @@ public class CustomerHelper {
         }
     }
 
-    public static void searchCustomerLastName() throws SQLException {
+    public static void searchCustomerLastName() {
 
         if (customers.isEmpty()) {
             System.out.println("No customers in register JavaAppl.");
@@ -49,7 +46,7 @@ public class CustomerHelper {
         }
     }
 
-    public static void listAllCustomers() throws SQLException {
+    public static void listAllCustomers() {
         if (customers.isEmpty()) {
             System.out.println("No customers in register. \n");
         } else {
@@ -133,16 +130,20 @@ public class CustomerHelper {
         }*/
     }
 
-    public static void deleteCustomer(Customer customer) throws SQLException {
-        while (true) {
-            String input = askString("Do you want to delete customer " + customer.getFullName() + "? (Y/N) :");
-            if (input.equalsIgnoreCase("y")) {
-                Database.getInstance().deleteCustomer(customer.getId());
-            } else if (input.equalsIgnoreCase("n"))  {
-                return;
-            } else {
-                System.out.println("Unknown input. Try again!");
+    public static void deleteCustomer(Customer customer) {
+        try {
+            while (true) {
+                String input = askString("Do you want to delete customer " + customer.getFullName() + "? (Y/N) :");
+                if (input.equalsIgnoreCase("y")) {
+                    Database.getInstance().deleteCustomer(customer.getId());
+                } else if (input.equalsIgnoreCase("n")) {
+                    return;
+                } else {
+                    System.out.println("Unknown input. Try again!");
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         /*int ID = askInt("To delete customer, enter customer ID:");
@@ -154,19 +155,23 @@ public class CustomerHelper {
         }*/
     }
 
-    public static void customersToDatabase() throws SQLException {
-        int existing = 0;
-        int added = 0;
+    public static void customersToDatabase() {
+        try {
+            int existing = 0;
+            int added = 0;
 
-        for (Customer c : customers) {
-            if (Database.getInstance().addCustomer(c.getId(), c.getFirstName(), c.getLastName(), c.getPhoneNumber())) {
-                added++;
-            } else {
-                existing++;
+            for (Customer c : customers) {
+                if (Database.getInstance().addCustomer(c.getId(), c.getFirstName(), c.getLastName(), c.getPhoneNumber())) {
+                    added++;
+                } else {
+                    existing++;
+                }
             }
-        }
 
-        System.out.println(added + " new customers added to the database, " + existing + " existing ignored.");
+            System.out.println(added + " new customers added to the database, " + existing + " existing ignored.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Customer getCustomer(int id) {

@@ -86,11 +86,14 @@ public class Bill {
 
     public void printBill() {
 
-        // TODO (Oscar) - Beräkna rumskostnad baserat på hur många dagar dem bott vid checkout
-
         System.out.println("Customer bill");
+        int dailyCharge = RoomHelper.getRoomMap().get(roomNumber).getRoomType().getDailyCharge();
+        int daysStayed = RoomHelper.daysStayed(RoomHelper.getRoomMap().get(roomNumber).getRoomNumber());
+        int total = daysStayed * dailyCharge;
+
         billItems.forEach(item -> System.out.println(billRow(item.getServiceType(), item.toString(), item.getPrice())));
-        System.out.println("\n# Total: " + getBillableItemsTotal() + " kr");
+        System.out.println("Stayed nights: " + daysStayed + " cost per night: " + dailyCharge + "Total room cost: " + total);
+        System.out.println("\n# Total: " + getBillableItemsTotal() + total + " kr");
     }
 
 }

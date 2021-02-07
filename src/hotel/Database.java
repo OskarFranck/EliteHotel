@@ -325,6 +325,14 @@ public class Database {
         }
     }
 
+    public ResultSet daysStayed(int roomNumber) throws SQLException {
+        PreparedStatement query = sqlConnection.prepareStatement("SELECT * FROM booking WHERE roomNumber = ? and checkOutDate is not null LIMIT 1");
+        query.setInt(1, roomNumber);
+//        query.setInt(2, customerId); borttagen parameter
+        return query.executeQuery();
+    }
+
+
     /** Creates a new bill table in the database from a Room number.
      * @param roomNumber Unique identity number of the room to be added.
      * @return int or 0 if anything went wrong.

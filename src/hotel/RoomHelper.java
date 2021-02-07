@@ -1,5 +1,6 @@
 package hotel;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -118,7 +119,6 @@ public class RoomHelper {
         if (!getRoomMap().get(addRoomNumber).isRented()) {
             try {
                 if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
-                    System.out.println("Booking added to DB");
                 }
             } catch (SQLException throwables) {
 
@@ -130,9 +130,8 @@ public class RoomHelper {
             Bill bill = new Bill(addRoomNumber);
             activeBillMap.put(addRoomNumber, bill);
 
-            System.out.println("Booking added to hashMap");
+            System.out.println("Room: " + roomMap.get(addRoomNumber).getRoomNumber() + " booked to customer: " + cust.getFullName());
         } else {
-            // TODO - hantera att bokning frågar efter ett available room ist för att gå vidare
             System.out.println("Could not add booking");
         }
     }
@@ -242,12 +241,9 @@ public class RoomHelper {
 
         int upgradedRoomNumber = getOnlyExistingAndAvailableRoom();
 
-        //TODO Badly handled nullpointerexception
         upgradeRoomDB(currentRoomNumber, upgradedRoomNumber);
         upgradeRoomHM(currentRoomNumber, upgradedRoomNumber);
 
-        // TODO - Move bill from current room to new room (KLAR? Behöver testas)
-        // TODO - Bill stannnar kvar på samma som tidigare
         Bill currentBill = activeBillMap.get(currentRoomNumber);
         currentBill.setRoomNumber(upgradedRoomNumber);
         activeBillMap.put(upgradedRoomNumber, currentBill);
@@ -257,12 +253,9 @@ public class RoomHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void upgradeRoomDB(int currentRoomNumber, int upgradedRoomNumber) {
-
-        // TODO Hantera att kunder kan stå på flera rum
 
         int customerId;
         int bookingId = 0;
@@ -279,7 +272,6 @@ public class RoomHelper {
                 bookingId = rs.getInt("bookingId");
             }
             Database.getInstance().upgradeBooking(bookingId, upgradedRoomNumber);
-            // TODO - hantera att inte kunna updatera till ett rum som inte finns eller redan är bokat
             System.out.println("Room updated in Database");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -307,8 +299,7 @@ public class RoomHelper {
     }
 
     public static void checkOut(Room room) {
-        //TODO Checkout is done with booking id, still need to get bookingslist as Array from DB
-        // TODO Använd rums nummmert för att hämta bill och sätta bill till completed och ta rums referansen och tabort from Billmap
+
         if (room == null) {
             return;
         }
@@ -329,6 +320,7 @@ public class RoomHelper {
         }
 
         LocalDate checkOutDate = LocalDate.now();
+        int cust = room.getRenter().getId();
 
         try {
             // Check-out room
@@ -337,22 +329,43 @@ public class RoomHelper {
             room.setRenter(null);
 
             // Check-out bill
+            room.getBill().printBill();
             Bill bookingBill = activeBillMap.get(room.getRoomNumber());
             bookingBill.setCompleted(true);
             Database.getInstance().checkOutBill(bookingBill.getId());
 
             System.out.println("Check-out complete for room #" + room.getRoomNumber());
-            // TODO - Skriv ut kvitto
+            // TODO - Skriv ut kvitto skriva antal nätter till (kvitto)
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    public static void daysStayed() {
-
+    public static int daysStayed(int roomNumber) {
+        Date checkInDate = null;
+        Date checkOutDate = null;
+        try {
+            ResultSet rs = Database.getInstance().daysStayed(roomNumber); // tog bort parameter nummer 2
+            while (rs.next()) {
+                checkInDate = rs.getDate("checkInDate");
+                checkOutDate = rs.getDate("checkOutDate");
+            }
+        } catch (SQLException e) {
+            System.err.println("Can't find booking");
+        }
+        if (checkInDate == null || checkOutDate == null) {
+            System.err.println("Cant calculate difference");
+            return 0;
+        } else {
+            return (int) ChronoUnit.DAYS.between(checkInDate.toLocalDate(), checkOutDate.toLocalDate());
+        }
     }
 
-    // TODO metod som kolla hur många dagar som gått mellan in och ut checking
+    public static void receiptToFile () {
+        // TODO Skriva total kostnad för vistelse och antar nätter
+        // TODO hämta kvitto från bill
+
+    }
 
     public static void addRoomsToDataBase() {
 
