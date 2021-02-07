@@ -28,8 +28,65 @@ public class RoomHelper {
         }
     }
 
+    public static int getOnlyExistingCustId() {
+        Customer cust;
+        do {
+            int customerId = Input.askInt("Enter customer ID: ");
+            cust = CustomerHelper.getCustomer(customerId);
+            if (cust == null) {
+                System.out.println("Cant find customer, try again");
+            }
+        } while (cust == null);
+        return cust.getId();
+    }
+
+    public static int getOnlyExistingRoomNumber() {
+        int existingRoom;
+        Room room;
+        do {
+            existingRoom = Input.askInt("Enter room number: ");
+            room = roomMap.get(existingRoom);
+            if (room == null) {
+                System.out.println("Cant find room, try again");
+            }
+        } while (room == null);
+
+        return room.getRoomNumber();
+    }
+
     public static void bookRoom() {
         // TODO ändra så metod kolla att input data går att använda direkt efter input
+        bookRoomMenu();
+
+        int addRoomNumber;
+        int customerId;
+        LocalDate checkInDate;
+
+        Customer cust = CustomerHelper.searchAndSelectCustomerMenu();
+        if (cust == null) {
+            return;
+        }
+        customerId = cust.getId();
+        addRoomNumber = getOnlyExistingRoomNumber();
+        checkInDate = LocalDate.now();
+
+        if (!getRoomMap().get(addRoomNumber).isRented()) {
+            try {
+                if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
+                    System.out.println("Booking added to DB");
+                }
+            } catch (SQLException throwables) {
+
+            }
+            getRoomMap().get(addRoomNumber).setRented(true);
+            getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
+            System.out.println("Booking added to hashMap");
+        } else {
+            System.out.println("Could not add booking");
+        }
+    }
+
+    public static void bookRoomMenu() {
         int choice;
 
         skip:
@@ -38,44 +95,29 @@ public class RoomHelper {
             System.out.println("2. List all available rooms");
             System.out.println("0. Back to menu");
 
-            choice = Input.askInt("Choose from menu: ");
+            choice = Input.askInt("Choose from menu: \n");
 
             switch (choice) {
                 case 1:
                     listRoomsByType();
                     break skip;
                 case 2:
-                    getAvailableRooms(true).forEach(room -> {
-                        if (room.getRenter() == null) {
-                            System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
-                        } else {
-                            System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
-                        }
-                    });
+                    listAllAvailableRooms();
                     break skip;
                 default:
                     return;
             }
         } while (choice < 0 || choice > 2);
+    }
 
-            int addRoomNumber = Input.askInt("Enter room number: ");
-            int customerId = Input.askInt("Enter customer id: ");
-            LocalDate checkInDate = LocalDate.now();
-
-            if (!getRoomMap().get(addRoomNumber).isRented()) {
-                try {
-                    if (Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate)) {
-                        System.out.println("Booking added to DB");
-                    }
-                } catch (SQLException throwables) {
-
-                }
-                getRoomMap().get(addRoomNumber).setRented(true);
-                getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
-                System.out.println("Booking added to hashMap");
+    public static void listAllAvailableRooms() {
+        getAvailableRooms(true).forEach(room -> {
+            if (room.getRenter() == null) {
+                System.out.println("Room #" + room.getRoomNumber() + " " + room.getRoomType() + ", Available");
             } else {
-                System.out.println("Could not add booking");
+                System.out.println("Room #" + room.getRoomNumber() + ", " + room.getRenter().getLastName());
             }
+        });
     }
 
     public static void listRoomsByType() {
@@ -95,30 +137,35 @@ public class RoomHelper {
                         System.out.println("Room #" + room.getRoomNumber() + ", Available");
                     }
                 });
+                break;
             case 2:
                 getAvailableRooms(true, RoomType.STANDARD_DOUBLE).forEach(room -> {
                     if (room.getRenter() == null) {
                         System.out.println("Room #" + room.getRoomNumber() + ", Available");
                     }
                 });
+                break;
             case 3:
                 getAvailableRooms(true, RoomType.LUXURY_SINGLE).forEach(room -> {
                     if (room.getRenter() == null) {
                         System.out.println("Room #" + room.getRoomNumber() + ", Available");
                     }
                 });
+                break;
             case 4:
                 getAvailableRooms(true, RoomType.LUXURY_DOUBLE).forEach(room -> {
                     if (room.getRenter() == null) {
                         System.out.println("Room #" + room.getRoomNumber() + ", Available");
                     }
                 });
+                break;
             case 5:
                 getAvailableRooms(true, RoomType.DELUXE_DOUBLE).forEach(room -> {
                     if (room.getRenter() == null) {
                         System.out.println("Room #" + room.getRoomNumber() + ", Available");
                     }
                 });
+                break;
         }
     }
 
