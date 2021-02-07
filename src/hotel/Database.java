@@ -331,15 +331,17 @@ public class Database {
      */
     public int newBill(int roomNumber) {
         try {
-            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Bill (roomNumber) VALUES (?)");
+            PreparedStatement statement = sqlConnection.prepareStatement("INSERT INTO Bill (roomNumber, complete) VALUES (?,?)");
             statement.setInt(1, roomNumber);
+            statement.setBoolean(2, false);
             statement.executeUpdate();
 
             ResultSet rs = sqlConnection.createStatement().executeQuery("SELECT LAST_INSERT_ID()");
             rs.next();
             return rs.getInt(1);
         } catch (SQLException e) {
-            System.err.println("Error: Could not add to database - does roomNumber exist in database?");
+            System.err.println("Error: Could not add bill to database - does roomNumber exist in database?");
+            e.printStackTrace();
             return 0;
         }
     }
@@ -404,6 +406,7 @@ public class Database {
             }
 
             RoomHelper.getRoomMap().get(bill.getRoomNumber()).setRoomBill(bill);
+            RoomHelper.addBillToMap(bill);
         } catch (SQLException e) {
             System.err.println("Error: Could not get bill from database");
             e.printStackTrace();
@@ -412,7 +415,7 @@ public class Database {
 
     /**
      * Get all bills and their data from the database
-     * @return ResultSet of database query with 3 columns [billId (int), roomNumber (int), foodItemType (String), complete (Boolean)]
+     * @return ResultSet of database query with 3 columns [billId (int), roomNumber (int), complete (Boolean)]
      * @throws SQLException -
      */
     public ResultSet getAllBills() throws SQLException {

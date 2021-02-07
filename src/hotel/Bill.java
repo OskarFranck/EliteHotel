@@ -11,6 +11,12 @@ public class Bill {
 
     public Bill(int roomNumber) {
         this.roomNumber = roomNumber;
+        try {
+            Database.getInstance().newBill(roomNumber);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getRoomNumber() {

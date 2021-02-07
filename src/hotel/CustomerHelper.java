@@ -294,9 +294,9 @@ public class CustomerHelper {
                 System.out.println("Multiple "+stringToken+"s found matching search:");
                 for (int i = 0; i < results.size(); i++) {
                     if (!byPhoneNumber) {
-                        System.out.println(i+1 + ". " + results.get(i).getFullName());
+                        System.out.println(i+1 + ". #" + results.get(i).getId() + " - " + results.get(i).getFullName());
                     } else {
-                        System.out.println(i+1 + ". " + results.get(i).getPhoneNumber() + ", " + results.get(i).getFullName());
+                        System.out.println(i+1 + ". #" + results.get(i).getId() + " - " + results.get(i).getPhoneNumber() + ", " + results.get(i).getFullName());
                     }
                 }
                 while (true) {

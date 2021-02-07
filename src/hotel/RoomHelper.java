@@ -10,9 +10,13 @@ import java.util.stream.Collectors;
 public class RoomHelper {
 
     private static final HashMap<Integer, Room> roomMap = new HashMap<>();
+    private static final HashMap<Integer, Bill> activeBillMap = new HashMap<>();
 
     public static HashMap<Integer, Room> getRoomMap() {
         return roomMap;
+    }
+    public static HashMap<Integer, Bill> getActiveBillMap() {
+        return activeBillMap;
     }
 
     public static void addRoomToMap(Room room) {
@@ -89,11 +93,21 @@ public class RoomHelper {
         int addRoomNumber;
         int customerId;
         LocalDate checkInDate;
+        Customer cust;
 
-        Customer cust = CustomerHelper.searchAndSelectCustomerMenu();
-        if (cust == null) {
-            return;
+        while (true) {
+            cust = CustomerHelper.searchAndSelectCustomerMenu();
+            if (cust == null) {
+                return; // Go back to main menu
+            }
+
+            if (findCustomersRoom(cust) != null) {
+                System.out.println("Customer is already booked to room.");
+                continue; // Loop again
+            }
+            break;
         }
+
         customerId = cust.getId();
 
         bookRoomMenu();
@@ -110,6 +124,7 @@ public class RoomHelper {
             }
             getRoomMap().get(addRoomNumber).setRented(true);
             getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
+            Bill bill = new Bill(addRoomNumber); // TODO - Store this somewhere? YES HASHMAP
             System.out.println("Booking added to hashMap");
         } else {
             // TODO - hantera att bokning frågar efter ett available room ist för att gå vidare
