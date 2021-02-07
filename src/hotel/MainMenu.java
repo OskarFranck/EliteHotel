@@ -1,19 +1,19 @@
 package hotel;
 
 import java.sql.SQLException;
-import hotel.CustomerHelper.*;
+
 public class MainMenu {
 
-    public static void mainMenu() throws SQLException{
-        System.out.println("Start menu Elite Hotel\n");
+    public static void mainMenu() throws SQLException {
         int choice;
-        boolean run = true; 
+        boolean run = true;
         do {
+            System.out.println(Main.printBold("Start menu Elite Hotel"));
             System.out.println("1. Receptionist");
             System.out.println("2. Customer");
             System.out.println("0. Exit program\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
@@ -23,32 +23,32 @@ public class MainMenu {
                     customerMenu();
                     break;
                 case 0:
-                    CustomerHelper.customersToDatabase();
-                    System.out.println("Tack och välkommen åter");
+                    // CustomerHelper.customersToDatabase(); // Behövs inte längre
+                    System.out.println("\nTack och välkommen åter!");
                     run = false;
                     break;
                 default:
-                    run = false; 
+                    run = false;
                     break;
             }
         } while (choice < 0 || choice > 2 || run); //info tex felaktig inmating
     }
-    private static void receptionistMenu() throws SQLException{
-        System.out.println("Receptionist menu\n");
 
+    private static void receptionistMenu() throws SQLException {
         int choice;
-        boolean run = false; //ändrat från true
+        boolean run = true; //ändrat till false från true (varför? Jag behöver att den är true -Oscar)
         do {
+            System.out.println(Main.printBold("\nReceptionist menu"));
             System.out.println("1. Register new customer");
             System.out.println("2. Handle customers");
             System.out.println("3. Book room");
-            System.out.println("4. Upgrade room");
+            System.out.println("4. Upgrade or change room");
             System.out.println("5. Order food");
             System.out.println("6. Checkout");
             System.out.println("7. Show bill");
             System.out.println("0. Back to main menu\n");
 
-            choice = Input.askInt("Choose for menu to continue");
+            choice = Input.askInt("Choose form menu to continue: ");
 
             switch (choice) {
                 case 1:
@@ -64,13 +64,14 @@ public class MainMenu {
                     RoomHelper.upgradeRoom();
                     break;
                 case 5:
-                    orderFood(selectRoomForFoodOrder());
+                    orderFood(selectRoom("Select room to order food too: "));
                     break;
                 case 6:
-                    RoomHelper.checkOut();
+                    RoomHelper.checkOut(selectRoom("Select room to checkout: "));
                     break;
                 case 7:
                     showBill();
+                    // TODO - Show bill from database or from hashmap
                     break;
                 default:
                     run = false;
@@ -79,61 +80,81 @@ public class MainMenu {
         } while (choice < 0 || choice > 7 || run);
 
     }
+
     private static void registerNewCustomer() {
-        
+
     }
+
     private static void bookOrUpgradeRoom() {
 
     }
+
     private static void showBill() {
 
     }
-    private static void handleCustomers() throws SQLException {
-        System.out.println("Handle customers\n");
 
+    private static void handleCustomers() throws SQLException {
         int choice;
         boolean run = true;
         do {
-            System.out.println("1. Search customer");
+            System.out.println(Main.printBold("\nHandle customers"));
+            System.out.println("1. Display customer details");
             System.out.println("2. List all customers");
             System.out.println("3. Update customer info");
             System.out.println("4. Delete customer");
             System.out.println("0. Back to employee menu\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
-                    CustomerHelper.searchCustomerID();
+                    //CustomerHelper.searchCustomerID(); // TODO - Kan vi ta bort denna?
+                    Customer displayCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (displayCustomer != null) {
+                        System.out.println(Main.printBold("Customer details:"));
+                        System.out.println("ID: " + displayCustomer.getId());
+                        System.out.println("Name: " + displayCustomer.getFullName());
+                        System.out.println("Phone number: " + displayCustomer.getPhoneNumber());
+                        Room customerRoom = RoomHelper.findCustomersRoom(displayCustomer);
+                        System.out.println("Currently checked-in: " + ((customerRoom != null) ? "Yes, Room #" + customerRoom.getRoomNumber() : "No"));
+                    }
                     break;
                 case 2:
                     CustomerHelper.listAllCustomers();
-                   // Database.getInstance().getStartingPointIdGenerator();
                     break;
                 case 3:
-                    CustomerHelper.updateCustomer();
+                    Customer updateCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (updateCustomer != null) {
+                        CustomerHelper.updateCustomer(updateCustomer);
+                    }
                     break;
-                 case 4:
-                    CustomerHelper.deleteCustomer();
-                    break;   
+                case 4:
+                    Customer deleteCustomer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (deleteCustomer != null) {
+                        CustomerHelper.deleteCustomer(deleteCustomer);
+                    }
+                    break;
                 default:
                     run = false;
                     break;
             }
         } while (choice < 0 || choice > 4 || run);
     }
+
     private static void searchCustomer() {
 
     }
+
     private static void updateCustomer() {
 
     }
+
     private static void deleteCustomer() {
 
     }
 
     private static void customerMenu() throws SQLException {
-        System.out.println("Customer menu\n");
+        System.out.println(Main.printBold("Customer menu\n"));
 
         int choice;
         boolean run = true;
@@ -144,7 +165,7 @@ public class MainMenu {
             System.out.println("4. Checkout");
             System.out.println("0. Back to main menu\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
@@ -154,10 +175,10 @@ public class MainMenu {
                     RoomHelper.bookRoom();
                     break;
                 case 3:
-                    orderFood(selectRoomForFoodOrder());
+                    orderFood(selectRoom("Select room to order food too: "));
                     break;
                 case 4:
-                    checkout();
+                    RoomHelper.checkOut(selectRoom("Select room to checkout: "));
                     break;
                 default:
                     run = false;
@@ -165,17 +186,33 @@ public class MainMenu {
             }
         } while (choice < 0 || choice > 4 || run);
     }
+
     private static void showRooms() {
 
+        for (RoomType type: RoomType.values()) {
+            System.out.println(Main.printBold("\n" + type.toString()));
+            System.out.println("Bed: " + type.typeOfBed());
+            System.out.println("No. of beds: " + type.getNumberOfBeds());
+            System.out.println("Has AC: " + ((type.hasAC()) ? "Yes" : "No"));
+            System.out.println("Daily charge: " + type.getDailyCharge() + " SEK");
+        }
+        System.out.println("");
     }
+
     private static void bookRoom() {
 
     }
-    private static void orderFood(Room room) {
-        if (room == null) { return; } // Jump out if no room was selected previous
-        int roomNumber = room.getRoomNumber();
 
-        // TODO - Fix "Bill to Room" connection and sort adding items to the bill given a Room object.
+    private static void orderFood(Room room) {
+        if (room == null) {
+            return;
+        } // Jump out if no room was selected previous
+        int roomNumber = room.getRoomNumber();
+        Bill roomBill = RoomHelper.getActiveBillMap().get(room.getRoomNumber());
+        if (roomBill == null) {
+            System.err.println("Error: room has no bill - something has gone very wrong!");
+            return;
+        }
 
         System.out.println("Order food menu\n");
         int choice;
@@ -185,52 +222,53 @@ public class MainMenu {
             System.out.println("2. Order Pasta - (" + Food.FoodMenuItem.PASTA.getPrice() + " kr)");
             System.out.println("3. Order Noodles - (" + Food.FoodMenuItem.NOODLES.getPrice() + " kr)");
             System.out.println("4. Order Drink - (" + Food.FoodMenuItem.DRINK.getPrice() + " kr)");
-            System.out.println("5. Go back to main menu\n");
+            System.out.println("0. Go back to main menu\n");
 
-            choice = Input.askInt("Choose from menu to continue");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
                     System.out.println("A sandwich has been ordered for Room #" + roomNumber + ".\n");
-                    // TODO - Add a sandwich object to the customer bill
+                    roomBill.add(new Food(Food.FoodMenuItem.SANDWICH));
                     break;
                 case 2:
                     System.out.println("A pasta dish has been ordered for Room #" + roomNumber + ".\n");
-                    // TODO - Add a pasta object to the customer bill
+                    roomBill.add(new Food(Food.FoodMenuItem.PASTA));
                     break;
                 case 3:
                     System.out.println("A noodles has been ordered for Room #" + roomNumber + ".\n");
-                    // TODO - Add a noodle object to the customer bill
+                    roomBill.add(new Food(Food.FoodMenuItem.NOODLES));
                     break;
                 case 4:
                     System.out.println("A drink has been ordered for Room #" + roomNumber + ".\n");
-                    // TODO - Add a drink object to the customer bill
+                    roomBill.add(new Food(Food.FoodMenuItem.DRINK));
                     break;
                 default:
                     run = false;
                     break;
             }
-        } while (choice < 1 || choice > 5 || run);
+        } while (choice < 0 || choice > 4 || run);
     }
 
-    private static Room selectRoomForFoodOrder() {
-        System.out.println("Select your room first for food order");
+    private static Room selectRoom(String menuHeader) {
+        System.out.println(menuHeader);
 
         while (true) {
             System.out.println("\n1. Enter your room number");
             System.out.println("2. View all currently booked rooms");
+            System.out.println("3. Select room from customer booking");
             System.out.println("0. Cancel and go back");
             switch (Input.getUserInputInt()) {
                 case 1:
                     int inputNumber = Input.askInt("Room number: ");
                     if (RoomHelper.getRoomMap().get(inputNumber) == null) {
-                        System.err.println("Room #" + inputNumber +" does not exists. Please try again!");
+                        System.err.println("Room #" + inputNumber + " does not exists. Please try again!");
                         break;
                     }
                     return RoomHelper.getRoomMap().get(inputNumber);
                 case 2:
                     System.out.println("\nAll currently booked rooms:");
-                    RoomHelper.getAvailableRooms(false).forEach(room -> {
+                    RoomHelper.getAvailableOrUnavailableRooms(false).forEach(room -> {
                         if (room.getRenter() == null) {
                             System.out.println("Room #" + room.getRoomNumber() + ", Unknown guest");
                         } else {
@@ -238,13 +276,32 @@ public class MainMenu {
                         }
                     });
                     break;
+                case 3:
+                    Customer customer = CustomerHelper.searchAndSelectCustomerMenu();
+                    if (customer == null) {
+                        break;
+                    }
+
+                    Room room = RoomHelper.findCustomersRoom(customer);
+                    if (room == null) {
+                        System.out.println("Customer is not checked into any room. Try again.");
+                        break;
+                    }
+
+                    System.out.println("Room #" + room.getRoomNumber() + " found.");
+                    String input = Input.askString("Continue with this room? (Y/N): ");
+                    while (true) {
+                        if (input.equalsIgnoreCase("y")) {
+                            return room;
+                        } else if (input.equalsIgnoreCase("n")) {
+                            return null;
+                        } else {
+                            System.out.println("Unknown command. Try again!");
+                        }
+                    }
                 case 0:
                     return null;
             }
         }
-    }
-
-    private static void checkout() {
-
     }
 }

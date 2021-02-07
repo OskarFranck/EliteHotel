@@ -4,6 +4,13 @@ import java.util.Scanner;
 public class Input {
     public static Scanner sc = new Scanner(System.in);
 
+    public static class InputStringIsBlankException extends Exception {
+        public InputStringIsBlankException(String errorMessage) {
+            super(errorMessage);
+        }
+    }
+
+
     public static int getUserInputInt() {
         String userInput;
         int parseInput = 0;
@@ -28,9 +35,13 @@ public class Input {
         do {
             try {
                 userInput = sc.nextLine();
+                if (userInput.chars().allMatch(Character::isWhitespace)) { throw new InputStringIsBlankException("Input contains only whitespace"); }
+                if (userInput.equals("")) { throw new InputStringIsBlankException("Input is empty"); }
                 run = false;
+            } catch (InputStringIsBlankException e) {
+                System.out.println("No input, try again: ");
             } catch (Exception e) {
-                System.out.println("Wrong input, Try again: ");
+                System.out.println("Wrong input, try again: ");
             }
         } while (run);
         return userInput;
@@ -54,12 +65,12 @@ public class Input {
     }
 
     public static String askString(String print) {
-        System.out.println(print);
+        System.out.print(print);
         return Input.getUserInputString();
     }
 
     public static int askInt(String print) {
-        System.out.println(print);
+        System.out.print(print);
         return Input.getUserInputInt();
     }
 

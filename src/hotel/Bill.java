@@ -1,5 +1,6 @@
 package hotel;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Bill {
@@ -7,9 +8,23 @@ public class Bill {
     final private ArrayList<BillableService> billItems = new ArrayList<>();
     private int roomNumber;
     private boolean completed = false;
+    private int id;
 
+    // Use this to create a new bill both in database and running program
     public Bill(int roomNumber) {
         this.roomNumber = roomNumber;
+        try {
+            this.id = Database.getInstance().newBill(roomNumber);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Use this to restore from database
+    public Bill(int id, int roomNumber) {
+        this.roomNumber = roomNumber;
+        this.id = id;
     }
 
     public int getRoomNumber() {
@@ -28,7 +43,21 @@ public class Bill {
         this.completed = completed;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void add(BillableService service) {
+        billItems.add(service);
+        try {
+            Food food = (Food) service;
+            Database.getInstance().addFoodToBill(id, food);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void restoreAdd(BillableService service) {
         billItems.add(service);
     }
 
@@ -57,11 +86,14 @@ public class Bill {
 
     public void printBill() {
 
-        // TODO (Oscar) - Beräkna rumskostnad baserat på hur många dagar dem bott vid checkout
-
         System.out.println("Customer bill");
+        int dailyCharge = RoomHelper.getRoomMap().get(roomNumber).getRoomType().getDailyCharge();
+        int daysStayed = RoomHelper.daysStayed(RoomHelper.getRoomMap().get(roomNumber).getRoomNumber());
+        int total = daysStayed * dailyCharge;
+
         billItems.forEach(item -> System.out.println(billRow(item.getServiceType(), item.toString(), item.getPrice())));
-        System.out.println("\n# Total: " + getBillableItemsTotal() + " kr");
+        System.out.println("Stayed nights: " + daysStayed + " cost per night: " + dailyCharge + " Total room cost: " + total);
+        System.out.println("\n# Total: " + (getBillableItemsTotal() + total) + " kr");
     }
 
 }
