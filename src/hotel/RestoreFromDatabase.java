@@ -117,5 +117,4 @@ public class RestoreFromDatabase {
         }
         if (debug) { System.out.println(Main.printBold("RESTORE: ")  + restored + " customers from database"); }
     }
-
 }

@@ -1,7 +1,6 @@
 package hotel;
 
 import static hotel.Input.*;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,11 +15,13 @@ public class CustomerHelper {
     public static void registerNewCustomer() {
         while (true) {
             System.out.println(Main.printBold("\nAdd new customer"));
-            firstName = askString("Enter first name: "); //Lägga till kontroll endast bokstäver, eller iaf ej blankt?
-            if (firstName.equals("0")) { return; } // Avbryt tidigt
+            firstName = askString("Enter first name: ");
+            if (firstName.equals("0")) { return; } // exit code
+
             lastName = askString("Enter last name: ");
-            if (lastName.equals("0")) { return; } // Avbryt tidigt
-            phoneNumber = askString("Enter phone number: "); //Begränsning antal tecken? regex bara 0-9 och vissa tecken?
+            if (lastName.equals("0")) { return; } // exit code
+
+            phoneNumber = askString("Enter phone number: ");
 
             Customer cust = new Customer(firstName, lastName, phoneNumber);
             System.out.println("New customer added to List Customers: " + cust.toString());
@@ -38,18 +39,6 @@ public class CustomerHelper {
         }
     }
 
-    public static void searchCustomerLastName() {
-
-        if (customers.isEmpty()) {
-            System.out.println("No customers in register JavaAppl.");
-        } else {
-            System.out.println("Serch for customer");
-            System.out.println("Enter last name: ");
-            lastName = sc.nextLine();
-            customers.stream().filter(c -> c.getLastName().equalsIgnoreCase(lastName)).forEach(System.out::println);
-        }
-    }
-
     public static void listAllCustomers() {
         if (customers.isEmpty()) {
             System.out.println("No customers in register. \n");
@@ -58,22 +47,9 @@ public class CustomerHelper {
         }
     }
 
-    public static void searchCustomerID() {
-        System.out.println("Serch for customer: ");
-        int ID = askInt("To search for customer, please enter customer ID");
-        if (customers.isEmpty()) {
-            System.out.println("No customers in register.");
-            System.out.println("");
-        } else //finns bara en matchning, något annat bättre sätt?
-        {
-            customers.stream().filter(c -> c.getId() == ID).forEach(System.out::println);
-        }
-    }
-
     public static void updateCustomer(Customer customer) {
         System.out.println("Update customer:");
         System.out.println(customer);
-        // int ID = askInt("Enter customer ID");
 
         while (true) {
             System.out.println("\n1. Change first name");
@@ -102,36 +78,6 @@ public class CustomerHelper {
                     System.out.println("Wrong input. Try again!");
             }
         }
-
-        /*switch (choice) {
-
-            case 1:
-                String fname = askString("Enter new first name: ");
-                for (Customer c : customers) {
-                    if (c.getId() == ID) { //använda exeption ?
-                        c.setFirstName(fname);
-                    }
-                }
-                break;
-            case 2:
-                String lname = askString("Enter new last name: ");
-                for (Customer c : customers) {
-                    if (c.getId() == ID) { //använda exeption ?
-                        c.setLastName(lname);
-                    }
-                }
-                break;
-            case 3:
-                String number = askString("Enter new phone number: ");
-                for (Customer c : customers) {
-                    if (c.getId() == ID) { //använda exeption ?
-                        c.setPhoneNumber(number);
-                    }
-                }
-                break;
-            default:
-                System.out.println("Wrong input");
-        }*/
     }
 
     public static void deleteCustomer(Customer customer) {
@@ -149,25 +95,6 @@ public class CustomerHelper {
                 }
             }
         } catch(SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    public static void customersToDatabase() {
-        try {
-            int existing = 0;
-            int added = 0;
-
-            for (Customer c : customers) {
-                if (Database.getInstance().addCustomer(c.getId(), c.getFirstName(), c.getLastName(), c.getPhoneNumber())) {
-                    added++;
-                } else {
-                    existing++;
-                }
-            }
-
-            System.out.println(added + " new customers added to the database, " + existing + " existing ignored.");
-        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

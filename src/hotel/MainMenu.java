@@ -1,10 +1,8 @@
 package hotel;
 
-import java.sql.SQLException;
-
 public class MainMenu {
 
-    public static void mainMenu() throws SQLException {
+    public static void mainMenu() {
         int choice;
         boolean run = true;
         do {
@@ -34,9 +32,9 @@ public class MainMenu {
         } while (choice < 0 || choice > 2 || run); //info tex felaktig inmating
     }
 
-    private static void receptionistMenu() throws SQLException {
+    private static void receptionistMenu() {
         int choice;
-        boolean run = true; //ändrat till false från true (varför? Jag behöver att den är true -Oscar)
+        boolean run = true;
         do {
             System.out.println(Main.printBold("\nReceptionist menu"));
             System.out.println("1. Register new customer");
@@ -70,7 +68,7 @@ public class MainMenu {
                     RoomHelper.checkOut(selectRoom("Select room to checkout: "));
                     break;
                 case 7:
-                    showBill();
+                   // showBill();
                     // TODO - Show bill from database or from hashmap
                     break;
                 default:
@@ -81,19 +79,7 @@ public class MainMenu {
 
     }
 
-    private static void registerNewCustomer() {
-
-    }
-
-    private static void bookOrUpgradeRoom() {
-
-    }
-
-    private static void showBill() {
-
-    }
-
-    private static void handleCustomers() throws SQLException {
+    private static void handleCustomers() {
         int choice;
         boolean run = true;
         do {
@@ -108,7 +94,6 @@ public class MainMenu {
 
             switch (choice) {
                 case 1:
-                    //CustomerHelper.searchCustomerID(); // TODO - Kan vi ta bort denna?
                     Customer displayCustomer = CustomerHelper.searchAndSelectCustomerMenu();
                     if (displayCustomer != null) {
                         System.out.println(Main.printBold("Customer details:"));
@@ -141,19 +126,7 @@ public class MainMenu {
         } while (choice < 0 || choice > 4 || run);
     }
 
-    private static void searchCustomer() {
-
-    }
-
-    private static void updateCustomer() {
-
-    }
-
-    private static void deleteCustomer() {
-
-    }
-
-    private static void customerMenu() throws SQLException {
+    private static void customerMenu() {
         System.out.println(Main.printBold("Customer menu\n"));
 
         int choice;
@@ -197,10 +170,6 @@ public class MainMenu {
             System.out.println("Daily charge: " + type.getDailyCharge() + " SEK");
         }
         System.out.println("");
-    }
-
-    private static void bookRoom() {
-
     }
 
     private static void orderFood(Room room) {
