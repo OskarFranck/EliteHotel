@@ -49,17 +49,16 @@ public class Database {
         return sqlConnection.createStatement().executeQuery("SELECT * FROM Customer");
     }
 
-    public boolean deleteCustomer(int Id) throws SQLException {
+    public boolean deleteCustomer(Customer customer) throws SQLException {
         try{
             String delCust = "DELETE FROM Customer WHERE customerId = ?";
             PreparedStatement statement = sqlConnection.prepareStatement(delCust);
-            statement.setInt(1, Id);
+            statement.setInt(1, customer.getId());
             statement.executeUpdate();
-            System.out.println( "DB uppdaterad, id " + Id + " borttagen");
-            System.out.println("");
-        return true;
+            System.out.println("Customer #" + customer.getId() + " \"" + customer.getFullName() + "\" deleted from program and database.");
+            return true;
         }catch (SQLException e){
-            System.out.println(e);
+            e.printStackTrace();
             return false;
         }
     }
@@ -390,34 +389,35 @@ public class Database {
      * @param billId Unique identity number of target bill
      * @return A new Bill-object based on the retrieved data, or null if anything went wrong.
      */
-    public void restoreSingleBill(int billId) {
+    public boolean restoreSingleBill(int billId, int roomNumber, boolean completed) {
         try {
-            Bill bill = null;
+            Bill bill = new Bill(billId, roomNumber);
+            if (completed) {
+                bill.setCompleted(true);
+            }
+
+            // Get and loop thru all food items on the bill if there are any
             ResultSet resultSet = getSingleBillData(billId);
-
-            // Loop through all rows in the result
             while (resultSet.next()) {
-                if (bill == null) {
-                    // Create the Bill-object with the retrieved Room number, once.
-                    bill = new Bill(resultSet.getInt("roomNumber"), resultSet.getInt("billId"));
-                    if(resultSet.getBoolean("complete")) {
-                        bill.setCompleted(true);
-                    }
-                }
                 String foodItemType = resultSet.getString("foodItemType");
-                bill.restoreAdd(new Food(Food.FoodMenuItem.valueOf(foodItemType))); // TODO - Här både läser och skriver den till databas (KLAR?)
+                bill.restoreAdd(new Food(Food.FoodMenuItem.valueOf(foodItemType)));
             }
 
-            if (bill == null) {
-                System.err.println("Error: No bill to restore with given ID");
-                return;
+            Room billRoom = RoomHelper.getRoomMap().get(roomNumber);
+            if (billRoom == null) {
+                System.err.println("Error: Trying to read in bill from database to room that does not exists in program");
+            } else {
+                billRoom.setRoomBill(bill);
             }
 
-            RoomHelper.getRoomMap().get(bill.getRoomNumber()).setRoomBill(bill);
+            System.out.println(billId + ", " + roomNumber + ", " + completed + ", " + bill.getBillItems());
+
             RoomHelper.addBillToMap(bill);
+            return true;
         } catch (SQLException e) {
             System.err.println("Error: Could not get bill from database");
             e.printStackTrace();
+            return false;
         }
     }
 

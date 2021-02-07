@@ -6,7 +6,7 @@ import java.sql.SQLException;
 public class RestoreFromDatabase {
 
     public static void restoreAll(boolean debug) {
-        if (debug) { System.out.println("### Restoring data from database ###"); }
+        if (debug) { System.out.println(Main.printBold("### Restoring data from database ###")); }
         loadCustomers(debug);
         restoreRooms(debug);
         restoreRoomBookingStatus(debug);
@@ -27,7 +27,7 @@ public class RestoreFromDatabase {
             System.err.println("Error: Could not read rooms from database!");
             e.printStackTrace();
         }
-        if (debug) { System.out.println("RESTORE: " + restored + " rooms restored from database"); }
+        if (debug) { System.out.println(Main.printBold("RESTORE: ") + restored + " rooms restored from database"); }
     }
 
     public static void restoreRoomBookingStatus(boolean debug) {
@@ -67,7 +67,7 @@ public class RestoreFromDatabase {
             System.err.println("Error: Could not read expected data from database!");
             e.printStackTrace();
         }
-        if (debug) { System.out.println("RESTORE: " + restored + " active bookings restored from database, " + skipped + " old non-active bookings ignored."); }
+        if (debug) { System.out.println(Main.printBold("RESTORE: ")  + restored + " active bookings restored from database, " + skipped + " old non-active bookings ignored."); }
     }
 
     public static void restoreAllBills(boolean debug) {
@@ -75,16 +75,21 @@ public class RestoreFromDatabase {
         try {
             ResultSet resultSet = Database.getInstance().getAllBills();
             while (resultSet.next()) {
+                int billId = resultSet.getInt("billId");
+                int roomNumber = resultSet.getInt("roomNumber");
+                boolean completed = resultSet.getBoolean("complete");
                 // Check if bill has been marked as "complete", then ignore restoring
                 if (resultSet.getString("complete") == null || !resultSet.getBoolean("complete")) {
-                    Database.getInstance().restoreSingleBill(resultSet.getInt("billId"));
-                    restored++;
+                    if (Database.getInstance().restoreSingleBill(billId, roomNumber, completed)) {
+                        restored++;
+                    }
                 }
             }
         } catch (SQLException e) {
             System.err.println("Error: Could not get bill data from database");
+            e.printStackTrace();
         }
-        if (debug) { System.out.println("RESTORE: " + restored + " active bills restored from database"); }
+        if (debug) { System.out.println(Main.printBold("RESTORE: ")  + restored + " active bills restored from database"); }
     }
 
     public static void loadCustomers(boolean debug) {
@@ -110,7 +115,7 @@ public class RestoreFromDatabase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (debug) { System.out.println("RESTORE: " + restored + " customers from database"); }
+        if (debug) { System.out.println(Main.printBold("RESTORE: ")  + restored + " customers from database"); }
     }
 
 }

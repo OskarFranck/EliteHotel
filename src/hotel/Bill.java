@@ -22,7 +22,7 @@ public class Bill {
     }
 
     // Use this to restore from database
-    public Bill(int roomNumber, int id) {
+    public Bill(int id, int roomNumber) {
         this.roomNumber = roomNumber;
         this.id = id;
     }

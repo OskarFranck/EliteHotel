@@ -1,6 +1,7 @@
 package hotel;
 
 import static hotel.Input.*;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,15 +15,18 @@ public class CustomerHelper {
 
     public static void registerNewCustomer() {
         while (true) {
+            System.out.println(Main.printBold("\nAdd new customer"));
             firstName = askString("Enter first name: "); //Lägga till kontroll endast bokstäver, eller iaf ej blankt?
+            if (firstName.equals("0")) { return; } // Avbryt tidigt
             lastName = askString("Enter last name: ");
+            if (lastName.equals("0")) { return; } // Avbryt tidigt
             phoneNumber = askString("Enter phone number: "); //Begränsning antal tecken? regex bara 0-9 och vissa tecken?
 
             Customer cust = new Customer(firstName, lastName, phoneNumber);
             System.out.println("New customer added to List Customers: " + cust.toString());
 
             while (true) {
-                String choice = Input.askString("Add another customer? (Y/N): ");
+                String choice = Input.askString("\nAdd another customer? (Y/N): ");
                 if (choice.equalsIgnoreCase("Y")) {
                     break; // Restart mainLoop
                 } else if (choice.equalsIgnoreCase("N")) {
@@ -131,20 +135,23 @@ public class CustomerHelper {
     }
 
     public static void deleteCustomer(Customer customer) {
+        //TODO Fixa indentering
         try {
             while (true) {
-                String input = askString("Do you want to delete customer " + customer.getFullName() + "? (Y/N) :");
+                String input = askString(Main.printBoldRed("Do you really want to delete customer #" + customer.getId() + " " + customer.getFullName() + "? (Y/N): "));
                 if (input.equalsIgnoreCase("y")) {
-                    Database.getInstance().deleteCustomer(customer.getId());
+                    Database.getInstance().deleteCustomer(customer);
+                    CustomerHelper.customers.remove(customer);
+                    return;
                 } else if (input.equalsIgnoreCase("n")) {
                     return;
                 } else {
                     System.out.println("Unknown input. Try again!");
                 }
             }
-        } catch (SQLException e) {
+        } catch(SQLException e){
             e.printStackTrace();
-        }
+    }
 
         /*int ID = askInt("To delete customer, enter customer ID:");
         if (customers.isEmpty()) {
@@ -191,11 +198,10 @@ public class CustomerHelper {
     }
 
     public static Customer searchAndSelectCustomerMenu() {
-        System.out.println("Search and select customer to continue\n");
-
         int choice;
         boolean run = true;
         do {
+            System.out.println(Main.printBold("\nSearch and select customer to continue"));
             System.out.println("1. Select by ID");
             System.out.println("2. Search and select by name");
             System.out.println("3. Search and select by phone number");
@@ -207,21 +213,21 @@ public class CustomerHelper {
                 case 1:
                     Customer customer = selectCustomerByIDMenu();
                     if (customer != null) {
-                        System.out.println("\n" + customer.getFullName() + " selected.\n");
+                        System.out.println(Main.printBold("\n" + customer.getFullName() + " selected.\n"));
                         return customer;
                     }
                     break;
                 case 2:
                     Customer customerSearch = modularSearchAndSelectCustomerMenu(false);
                     if (customerSearch != null) {
-                        System.out.println("\n" + customerSearch.getFullName() + " selected.\n");
+                        System.out.println(Main.printBold("\n" + customerSearch.getFullName() + " selected.\n"));
                         return customerSearch;
                     }
                     break;
                 case 3:
                     Customer customerSearchPhone = modularSearchAndSelectCustomerMenu(true);
                     if (customerSearchPhone != null) {
-                        System.out.println("\n" + customerSearchPhone.getFullName() + " selected.\n");
+                        System.out.println(Main.printBold("\n" + customerSearchPhone.getFullName() + " selected.\n"));
                         return customerSearchPhone;
                     }
                     break;
@@ -240,7 +246,7 @@ public class CustomerHelper {
 
     private static Customer selectCustomerByIDMenu() {
         while (true) {
-            System.out.println("\nSelect by ID. Enter 0 to cancel.");
+            System.out.println(Main.printBold("\nSelect by ID. Enter 0 to cancel."));
             System.out.print("Customer ID: ");
             int input = Input.getUserInputInt();
 
@@ -261,7 +267,7 @@ public class CustomerHelper {
         if (byPhoneNumber) { stringToken = "phone number"; };
 
         while (true) {
-            System.out.println("\nSearch by "+stringToken+". Enter 0 to cancel");
+            System.out.println(Main.printBold("\nSearch by "+stringToken+". Enter 0 to cancel"));
             System.out.print("Customer "+stringToken+": ");
             String input = Input.getUserInputString();
 
@@ -277,11 +283,11 @@ public class CustomerHelper {
             if (results.size() == 0) {
                 System.err.println("No "+stringToken+"s found with \"" + input + "\". Try again!");
             } else if (results.size() == 1) {
-                System.out.print("One match found: ");
+                System.out.print(Main.printBold("One match found: "));
                 if (!byPhoneNumber) {
-                    System.out.println(results.get(0).getFullName());
+                    System.out.println(Main.printBold(results.get(0).getFullName()));
                 } else {
-                    System.out.println(results.get(0).getPhoneNumber() + ", " + results.get(0).getFullName());
+                    System.out.println(Main.printBold(results.get(0).getPhoneNumber() + ", " + results.get(0).getFullName()));
                 }
                 System.out.print("Continue with this selection? (Y/N): ");
                 while (true) {
@@ -296,12 +302,12 @@ public class CustomerHelper {
                 }
 
             } else {
-                System.out.println("Multiple "+stringToken+"s found matching search:");
+                System.out.println(Main.printBold("\nMultiple "+stringToken+"s found matching search:"));
                 for (int i = 0; i < results.size(); i++) {
                     if (!byPhoneNumber) {
-                        System.out.println(i+1 + ". #" + results.get(i).getId() + " - " + results.get(i).getFullName());
+                        System.out.println(i+1 + ". " + results.get(i).getFullName() + ", ID: " + results.get(i).getId());
                     } else {
-                        System.out.println(i+1 + ". #" + results.get(i).getId() + " - " + results.get(i).getPhoneNumber() + ", " + results.get(i).getFullName());
+                        System.out.println(i+1 + ". " + results.get(i).getPhoneNumber() + ", " + results.get(i).getFullName() + ", ID: " + results.get(i).getId());
                     }
                 }
                 while (true) {
