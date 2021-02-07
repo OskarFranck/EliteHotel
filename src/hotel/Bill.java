@@ -92,8 +92,8 @@ public class Bill {
         int total = daysStayed * dailyCharge;
 
         billItems.forEach(item -> System.out.println(billRow(item.getServiceType(), item.toString(), item.getPrice())));
-        System.out.println("Stayed nights: " + daysStayed + " cost per night: " + dailyCharge + "Total room cost: " + total);
-        System.out.println("\n# Total: " + getBillableItemsTotal() + total + " kr");
+        System.out.println("Stayed nights: " + daysStayed + " cost per night: " + dailyCharge + " Total room cost: " + total);
+        System.out.println("\n# Total: " + (getBillableItemsTotal() + total) + " kr");
     }
 
 }

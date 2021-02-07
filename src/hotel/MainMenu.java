@@ -188,11 +188,6 @@ public class MainMenu {
     }
 
     private static void showRooms() {
-        /*RoomHelper.getRoomMap().entrySet().forEach(rs -> System.out.println("Room: " + rs.getValue().getRoomType().name() +
-                ", Bed: " + rs.getValue().getRoomType().typeOfBed() + "size, " +
-                ", AC: " + rs.getValue().getRoomType().hasAC() +
-                ", No.of beds: " + rs.getValue().getRoomType().getNumberOfBeds() +
-                ", Daily charge: " + rs.getValue().getRoomType().getDailyCharge()));*/
 
         for (RoomType type: RoomType.values()) {
             System.out.println(Main.printBold("\n" + type.toString()));

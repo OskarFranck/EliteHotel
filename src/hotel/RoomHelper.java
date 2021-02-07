@@ -1,5 +1,6 @@
 package hotel;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -349,7 +350,7 @@ public class RoomHelper {
             room.setRenter(null);
 
             // Check-out bill
-            room.getBill().printBill();
+            activeBillMap.get(room.getRoomNumber()).printBill();
             Bill bookingBill = activeBillMap.get(room.getRoomNumber());
             bookingBill.setCompleted(true);
             Database.getInstance().checkOutBill(bookingBill.getId());
@@ -383,8 +384,9 @@ public class RoomHelper {
 
     public static void receiptToFile () {
         // TODO Skriva total kostnad för vistelse och antar nätter
-        // TODO hämta kvitto från bill
-
+        // TODO hämta kvitto från bill (printbill) först gör print bill metod som skickar  tillbaka sträng
+        // TODO hämta för att printa i terminal och hämta för att skriva till file
+        // TODO Serializeble för att skriva object till file (skapa en class som är serialazible)
     }
 
     public static void addRoomsToDataBase() {

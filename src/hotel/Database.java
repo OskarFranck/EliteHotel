@@ -403,12 +403,12 @@ public class Database {
                 bill.restoreAdd(new Food(Food.FoodMenuItem.valueOf(foodItemType)));
             }
 
-            Room billRoom = RoomHelper.getRoomMap().get(roomNumber);
-            if (billRoom == null) {
-                System.err.println("Error: Trying to read in bill from database to room that does not exists in program");
-            } else {
-                billRoom.setRoomBill(bill);
-            }
+//            Room billRoom = RoomHelper.getRoomMap().get(roomNumber);
+//            if (billRoom == null) {
+//                System.err.println("Error: Trying to read in bill from database to room that does not exists in program");
+//            } else {
+//                RoomHelper.getActiveBillMap().put(roomNumber, bill);
+//            }
 
             System.out.println(billId + ", " + roomNumber + ", " + completed + ", " + bill.getBillItems());
 

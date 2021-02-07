@@ -135,7 +135,6 @@ public class CustomerHelper {
     }
 
     public static void deleteCustomer(Customer customer) {
-        //TODO Fixa indentering
         try {
             while (true) {
                 String input = askString(Main.printBoldRed("Do you really want to delete customer #" + customer.getId() + " " + customer.getFullName() + "? (Y/N): "));
@@ -151,15 +150,7 @@ public class CustomerHelper {
             }
         } catch(SQLException e){
             e.printStackTrace();
-    }
-
-        /*int ID = askInt("To delete customer, enter customer ID:");
-        if (customers.isEmpty()) {
-            System.out.println("No customers in register.");
-        } else {
-            customers.removeIf(c -> c.getId() == ID);
-            Database.getInstance().deleteCustomer(ID);
-        }*/
+        }
     }
 
     public static void customersToDatabase() {
