@@ -30,4 +30,12 @@ public class Main {
         MainMenu.mainMenu();
     }
 
+    public static String printBold(String input) {
+        return "\033[1m"+input+"\033[0m";
+    }
+
+    public static String printBoldRed(String input) {
+        return "\u001B[31m"+input+"\u001B[0m";
+    }
+
 }

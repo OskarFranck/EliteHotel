@@ -5,10 +5,10 @@ import java.sql.SQLException;
 public class MainMenu {
 
     public static void mainMenu() throws SQLException {
-        System.out.println("Start menu Elite Hotel\n");
         int choice;
         boolean run = true;
         do {
+            System.out.println(Main.printBold("Start menu Elite Hotel"));
             System.out.println("1. Receptionist");
             System.out.println("2. Customer");
             System.out.println("0. Exit program\n");
@@ -35,15 +35,14 @@ public class MainMenu {
     }
 
     private static void receptionistMenu() throws SQLException {
-        System.out.println("Receptionist menu\n");
-
         int choice;
         boolean run = true; //ändrat till false från true (varför? Jag behöver att den är true -Oscar)
         do {
+            System.out.println(Main.printBold("\nReceptionist menu"));
             System.out.println("1. Register new customer");
             System.out.println("2. Handle customers");
             System.out.println("3. Book room");
-            System.out.println("4. Upgrade room");
+            System.out.println("4. Upgrade or change room");
             System.out.println("5. Order food");
             System.out.println("6. Checkout");
             System.out.println("7. Show bill");
@@ -95,11 +94,10 @@ public class MainMenu {
     }
 
     private static void handleCustomers() throws SQLException {
-        System.out.println("Handle customers\n");
-
         int choice;
         boolean run = true;
         do {
+            System.out.println(Main.printBold("\nHandle customers"));
             System.out.println("1. Display customer details");
             System.out.println("2. List all customers");
             System.out.println("3. Update customer info");
@@ -113,12 +111,12 @@ public class MainMenu {
                     //CustomerHelper.searchCustomerID(); // TODO - Kan vi ta bort denna?
                     Customer displayCustomer = CustomerHelper.searchAndSelectCustomerMenu();
                     if (displayCustomer != null) {
-                        System.out.println("Customer details:");
+                        System.out.println(Main.printBold("Customer details:"));
                         System.out.println("ID: " + displayCustomer.getId());
                         System.out.println("Name: " + displayCustomer.getFullName());
                         System.out.println("Phone number: " + displayCustomer.getPhoneNumber());
                         Room customerRoom = RoomHelper.findCustomersRoom(displayCustomer);
-                        System.out.println("Currently checked-in: " + ((customerRoom != null) ? "Yes, Room #" + customerRoom.getRoomNumber() + "\n" : "No\n"));
+                        System.out.println("Currently checked-in: " + ((customerRoom != null) ? "Yes, Room #" + customerRoom.getRoomNumber() : "No"));
                     }
                     break;
                 case 2:
