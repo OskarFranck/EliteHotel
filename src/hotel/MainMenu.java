@@ -154,7 +154,7 @@ public class MainMenu {
     }
 
     private static void customerMenu() throws SQLException {
-        System.out.println("Customer menu\n");
+        System.out.println(Main.printBold("Customer menu\n"));
 
         int choice;
         boolean run = true;
@@ -188,11 +188,20 @@ public class MainMenu {
     }
 
     private static void showRooms() {
-        RoomHelper.getRoomMap().entrySet().forEach(rs -> System.out.println("Room: " + rs.getValue().getRoomType().name() +
+        /*RoomHelper.getRoomMap().entrySet().forEach(rs -> System.out.println("Room: " + rs.getValue().getRoomType().name() +
                 ", Bed: " + rs.getValue().getRoomType().typeOfBed() + "size, " +
                 ", AC: " + rs.getValue().getRoomType().hasAC() +
                 ", No.of beds: " + rs.getValue().getRoomType().getNumberOfBeds() +
-                ", Daily charge: " + rs.getValue().getRoomType().getDailyCharge()));
+                ", Daily charge: " + rs.getValue().getRoomType().getDailyCharge()));*/
+
+        for (RoomType type: RoomType.values()) {
+            System.out.println(Main.printBold("\n" + type.toString()));
+            System.out.println("Bed: " + type.typeOfBed());
+            System.out.println("No. of beds: " + type.getNumberOfBeds());
+            System.out.println("Has AC: " + ((type.hasAC()) ? "Yes" : "No"));
+            System.out.println("Daily charge: " + type.getDailyCharge() + " SEK");
+        }
+        System.out.println("");
     }
 
     private static void bookRoom() {
