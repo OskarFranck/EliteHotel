@@ -6,7 +6,6 @@ public class Room {
     private final RoomType roomType;
     private boolean rented = false;
     private Customer renter = null;
-    private Bill roomBill = null;
 
     Room(int roomNumber, RoomType roomType) {
         this.roomNumber = roomNumber;

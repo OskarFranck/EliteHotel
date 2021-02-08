@@ -163,10 +163,11 @@ public class MainMenu {
     private static void showRooms() {
 
         for (RoomType type: RoomType.values()) {
-            System.out.println(Main.printBold("\n" + type.toString()));
-            System.out.println("Bed: " + type.typeOfBed());
+            System.out.println(Main.printBold("\n" + type.print()));
+            System.out.println("Bed: " + type.typeOfBed() + " size");
             System.out.println("No. of beds: " + type.getNumberOfBeds());
             System.out.println("Has AC: " + ((type.hasAC()) ? "Yes" : "No"));
+            System.out.println("Breakfast included: " + ((type.isBreakfastIncluded()) ? "Yes" : "No"));
             System.out.println("Daily charge: " + type.getDailyCharge() + " SEK");
         }
         System.out.println("");

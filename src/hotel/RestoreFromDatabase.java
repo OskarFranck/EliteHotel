@@ -97,7 +97,7 @@ public class RestoreFromDatabase {
         try {
             Customer.idGen = Database.getInstance().getStartingPointIdGenerator();
         } catch(SQLException e){
-            System.out.println(e);
+            e.printStackTrace();
         }
 
         int restored = 0;
