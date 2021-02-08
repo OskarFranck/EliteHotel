@@ -86,14 +86,14 @@ public class Bill {
 
     public void printBill() {
 
-        System.out.println("Customer bill");
+        System.out.println(Main.printBold("\nCustomer bill"));
         int dailyCharge = RoomHelper.getRoomMap().get(roomNumber).getRoomType().getDailyCharge();
         int daysStayed = RoomHelper.daysStayed(RoomHelper.getRoomMap().get(roomNumber).getRoomNumber());
         int total = daysStayed * dailyCharge;
 
         billItems.forEach(item -> System.out.println(billRow(item.getServiceType(), item.toString(), item.getPrice())));
-        System.out.println("Stayed nights: " + daysStayed + " cost per night: " + dailyCharge + " Total room cost: " + total);
-        System.out.println("\n# Total: " + (getBillableItemsTotal() + total) + " kr");
+        System.out.println("Stayed nights: " + daysStayed + ", cost per night: " + dailyCharge + " kr, Total room cost: " + total + " kr");
+        System.out.println("\n# Total: " + (getBillableItemsTotal() + total) + " kr\n");
     }
 
 }

@@ -4,31 +4,31 @@ public enum RoomType {
 
     STANDARD_SINGLE(1, "single", false, true, 2000) {
         @Override
-        public String toString() {
+        public String print() {
             return "Standard Single";
         }
     },
     STANDARD_DOUBLE(2, "single", false, true, 4000) {
         @Override
-        public String toString() {
+        public String print() {
             return "Standard Double";
         }
     },
     LUXURY_SINGLE(1, "queen", true, true, 4000) {
         @Override
-        public String toString() {
+        public String print() {
             return "Luxury Single";
         }
     },
     LUXURY_DOUBLE(1, "king", true, true, 6000) {
         @Override
-        public String toString() {
+        public String print() {
             return "Luxury Double";
         }
     },
     DELUXE_DOUBLE(1,"king", true, true, 8000) {
         @Override
-        public String toString() {
+        public String print() {
             return "Deluxe Double";
         }
     };
@@ -66,5 +66,9 @@ public enum RoomType {
     public int getDailyCharge() {
         return dailyCharge;
     }
+
+    public String print() {
+        return "";
+    };
 
 }
