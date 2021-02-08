@@ -1,5 +1,7 @@
 package hotel;
 
+import java.io.IOException;
+
 public class MainMenu {
 
     public static void mainMenu() {
@@ -43,7 +45,7 @@ public class MainMenu {
             System.out.println("4. Upgrade or change room");
             System.out.println("5. Order food");
             System.out.println("6. Checkout");
-            System.out.println("7. Show bill");
+            System.out.println("7. Show stored checked out bills");
             System.out.println("0. Back to main menu\n");
 
             choice = Input.askInt("Choose form menu to continue: ");
@@ -68,7 +70,11 @@ public class MainMenu {
                     RoomHelper.checkOut(selectRoom("Select room to checkout: "));
                     break;
                 case 7:
-                   // showBill();
+                    try {
+                        Receipt.readReceipt();
+                    } catch (IOException i) {
+                        i.printStackTrace();
+                    }
                     // TODO - Show bill from database or from hashmap
                     break;
                 default:
@@ -76,7 +82,6 @@ public class MainMenu {
                     break;
             }
         } while (choice < 0 || choice > 7 || run);
-
     }
 
     private static void handleCustomers() {

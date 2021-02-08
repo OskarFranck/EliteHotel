@@ -1,6 +1,7 @@
 package hotel;
 
-import java.io.Serializable;
+import java.io.*;
+import java.util.Scanner;
 
 public class Receipt implements Serializable {
 
@@ -8,57 +9,18 @@ public class Receipt implements Serializable {
     private int nightsStayed;
     private int total;
     private String services;
-    private int billedServices;
+    private int servicesBilled;
 
     public Receipt() {
     }
+
 
     public Receipt(int dailyCharge, int nightsStayed, int total, String services, int billedServices) {
         this.dailyCharge = dailyCharge;
         this.nightsStayed = nightsStayed;
         this.total = total;
         this.services = services;
-        this.billedServices = billedServices;
-    }
-
-    public int getDailyCharge() {
-        return dailyCharge;
-    }
-
-    public void setDailyCharge(int dailyCharge) {
-        this.dailyCharge = dailyCharge;
-    }
-
-    public int getNightsStayed() {
-        return nightsStayed;
-    }
-
-    public void setNightsStayed(int nightsStayed) {
-        this.nightsStayed = nightsStayed;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public String getServices() {
-        return services;
-    }
-
-    public void setServices(String services) {
-        this.services = services;
-    }
-
-    public int getBilledServices() {
-        return billedServices;
-    }
-
-    public void setBilledServices(int billedServices) {
-        this.billedServices = billedServices;
+        this.servicesBilled = billedServices;
     }
 
     @Override
@@ -68,7 +30,28 @@ public class Receipt implements Serializable {
                 ", nightsStayed=" + nightsStayed +
                 ", total=" + total +
                 ", services='" + services + '\'' +
-                ", billedServices=" + billedServices +
+                ", billedServices=" + servicesBilled +
                 '}';
     }
+
+    public static void readReceipt() throws IOException{
+        File file = new File("receipt.txt");
+        Scanner sc = new Scanner(file);
+
+        while (sc.hasNext()) {
+            System.out.println(sc.nextLine());
+        }
+    }
+
+    public static void writeReceipt(int roomNumber, int customerId) throws IOException{
+        String name = RoomHelper.printAllStoredBills(roomNumber, customerId);
+
+        File file = new File("receipt.txt");
+        FileWriter writer = new FileWriter(file, true);
+        writer.write(System.lineSeparator() + name);
+        writer.flush();
+        writer.close();
+
+    }
+
 }

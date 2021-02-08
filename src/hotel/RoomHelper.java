@@ -1,5 +1,6 @@
 package hotel;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -75,7 +76,7 @@ public class RoomHelper {
         }
     }
 
-    public static int getOnlyExistingAndAvailableRoom() {
+    public static int getOnlyExistingAndAvailableRoomNumber() {
         while (true) {
             try {
 
@@ -98,7 +99,7 @@ public class RoomHelper {
     }
 
     public static void bookRoom() {
-        int addRoomNumber;
+        int targetRoomNumber;
         int customerId;
         LocalDate checkInDate;
         Customer cust;
@@ -120,23 +121,23 @@ public class RoomHelper {
         customerId = cust.getId();
 
         bookRoomMenu();
-        addRoomNumber = getOnlyExistingAndAvailableRoom();
+        targetRoomNumber = getOnlyExistingAndAvailableRoomNumber();
         checkInDate = LocalDate.now();
 
-        if (!getRoomMap().get(addRoomNumber).isRented()) {
+        if (!getRoomMap().get(targetRoomNumber).isRented()) {
             try {
-                Database.getInstance().addBooking(addRoomNumber, customerId, checkInDate);
+                Database.getInstance().addBooking(targetRoomNumber, customerId, checkInDate);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            getRoomMap().get(addRoomNumber).setRented(true);
-            getRoomMap().get(addRoomNumber).setRenter(CustomerHelper.customers.stream().filter(cs -> cs.getId() == customerId).findFirst().orElse(null));
+            getRoomMap().get(targetRoomNumber).setRented(true);
+            getRoomMap().get(targetRoomNumber).setRenter(cust);
 
             // Create a new bill for this booking
-            Bill bill = new Bill(addRoomNumber);
-            activeBillMap.put(addRoomNumber, bill);
+            Bill bill = new Bill(targetRoomNumber);
+            activeBillMap.put(targetRoomNumber, bill);
 
-            System.out.println("\nBooked " + cust.getFullName() + " to room #" + addRoomNumber);
+            System.out.println("\nBooked " + cust.getFullName() + " to room #" + targetRoomNumber);
         } else {
             System.out.println("Could not add booking");
         }
@@ -255,7 +256,7 @@ public class RoomHelper {
             }
         });
 
-        int upgradedRoomNumber = getOnlyExistingAndAvailableRoom();
+        int upgradedRoomNumber = getOnlyExistingAndAvailableRoomNumber();
 
         upgradeRoomDB(currentRoomNumber, upgradedRoomNumber);
         upgradeRoomHM(currentRoomNumber, upgradedRoomNumber);
@@ -351,6 +352,11 @@ public class RoomHelper {
 
             // Check-out bill
             activeBillMap.get(room.getRoomNumber()).printBill();
+            try {
+                Receipt.writeReceipt(room.getRoomNumber(),cust);
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
             Bill bookingBill = activeBillMap.get(room.getRoomNumber());
             bookingBill.setCompleted(true);
             Database.getInstance().checkOutBill(bookingBill.getId());
@@ -378,19 +384,22 @@ public class RoomHelper {
             System.err.println("Cant calculate difference");
             return 0;
         } else {
-            return (int) ChronoUnit.DAYS.between(checkInDate.toLocalDate(), checkOutDate.toLocalDate());
+            int daysStayed = (int) ChronoUnit.DAYS.between(checkInDate.toLocalDate(), checkOutDate.toLocalDate());
+            if (daysStayed == 0) {
+                daysStayed = daysStayed + 1;
+            }
+            return daysStayed;
         }
     }
 
-    public static void receiptToFile (int roomNumber) {
-        Receipt receipt = new Receipt();
-        receipt.setDailyCharge(daysStayed(RoomHelper.getRoomMap().get(roomNumber).getRoomNumber()));
-        receipt.setNightsStayed(getRoomMap().get(roomNumber).getRoomType().getDailyCharge());
-//        receipt.setBilledServices();
-        // TODO Skriva total kostnad för vistelse och antar nätter
-        // TODO hämta kvitto från bill (printbill) först gör print bill metod som skickar  tillbaka sträng
-        // TODO hämta för att printa i terminal och hämta för att skriva till file
-        // TODO Serializeble för att skriva object till file (skapa en class som är serialazible)
+    public static String printAllStoredBills(int roomNumber, int customerId) {
+        System.out.println("Customer bill");
+        int dailyCharge = RoomHelper.getRoomMap().get(roomNumber).getRoomType().getDailyCharge();
+        int daysStayed = RoomHelper.daysStayed(RoomHelper.getRoomMap().get(roomNumber).getRoomNumber());
+        int total = daysStayed * dailyCharge;
+        int serviceBillTotal = activeBillMap.get(roomNumber).getBillableItemsTotal();
+
+        return "Room#" + roomNumber + ", CustomerID: " + customerId + ", Days stayed: " + daysStayed + ", Daily charge: " + dailyCharge + "kr, Room cost: " + total + "kr, Service bill: " + serviceBillTotal + "kr";
     }
 
     public static void addRoomsToDataBase() {

@@ -83,17 +83,10 @@ public class Bill {
     private String billRow(String type, String name, int price) {
         return "# " + type + ": " + name + "    " + price + " kr";
     }
-
+    // TODO ändrade tillbaka till oscars orginal printBill (nu står det bara BillebleServices när man checkar ut)
     public void printBill() {
-
         System.out.println("Customer bill");
-        int dailyCharge = RoomHelper.getRoomMap().get(roomNumber).getRoomType().getDailyCharge();
-        int daysStayed = RoomHelper.daysStayed(RoomHelper.getRoomMap().get(roomNumber).getRoomNumber());
-        int total = daysStayed * dailyCharge;
-
         billItems.forEach(item -> System.out.println(billRow(item.getServiceType(), item.toString(), item.getPrice())));
-        System.out.println("Stayed nights: " + daysStayed + " cost per night: " + dailyCharge + " Total room cost: " + total);
-        System.out.println("\n# Total: " + (getBillableItemsTotal() + total) + " kr");
+        System.out.println("\n# Total: " + getBillableItemsTotal() + " kr");
     }
-
 }
