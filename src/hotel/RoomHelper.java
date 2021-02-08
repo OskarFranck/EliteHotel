@@ -382,7 +382,11 @@ public class RoomHelper {
         }
     }
 
-    public static void receiptToFile () {
+    public static void receiptToFile (int roomNumber) {
+        Receipt receipt = new Receipt();
+        receipt.setDailyCharge(daysStayed(RoomHelper.getRoomMap().get(roomNumber).getRoomNumber()));
+        receipt.setNightsStayed(getRoomMap().get(roomNumber).getRoomType().getDailyCharge());
+//        receipt.setBilledServices();
         // TODO Skriva total kostnad för vistelse och antar nätter
         // TODO hämta kvitto från bill (printbill) först gör print bill metod som skickar  tillbaka sträng
         // TODO hämta för att printa i terminal och hämta för att skriva till file
