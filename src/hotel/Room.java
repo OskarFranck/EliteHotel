@@ -1,6 +1,6 @@
 package hotel;
 
-public class Room {
+public class Room implements Printable {
 
     private final int roomNumber;
     private final RoomType roomType;
@@ -34,6 +34,11 @@ public class Room {
 
     public void setRenter(Customer renter) {
         this.renter = renter;
+    }
+
+    @Override
+    public void printToConsole() {
+        System.out.println("Room: #" + roomNumber + " " + getRoomType().print() + ((rented) ? ", rented to #" + getRenter().getId() + " " + getRenter().getFullName() + "." : ", available room."));
     }
 
 }

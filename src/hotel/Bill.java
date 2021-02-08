@@ -3,7 +3,7 @@ package hotel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Bill {
+public class Bill implements Printable {
 
     final private ArrayList<BillableService> billItems = new ArrayList<>();
     private int roomNumber;
@@ -96,4 +96,8 @@ public class Bill {
         System.out.println("\n# Total: " + (getBillableItemsTotal() + total) + " kr\n");
     }
 
+    @Override
+    public void printToConsole() {
+        System.out.println("Bill: #" + id + " for room number #" + roomNumber + ". " + ((completed) ? "Completed bill" : "Open bill") + ((billItems.size() > 0) ? " contains: " + billItems : "."));
+    }
 }
