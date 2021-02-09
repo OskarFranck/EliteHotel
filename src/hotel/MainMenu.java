@@ -2,6 +2,7 @@ package hotel;
 
 import java.util.HashMap;
 import java.util.List;
+import java.io.IOException;
 
 public class MainMenu {
 
@@ -138,6 +139,7 @@ public class MainMenu {
     }
 
     private static void customerMenu() {
+
         System.out.println(Main.printBold("\nCustomer menu"));
 
         int choice;
