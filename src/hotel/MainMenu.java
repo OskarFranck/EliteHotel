@@ -47,7 +47,7 @@ public class MainMenu {
             System.out.println("4. Upgrade or change room");
             System.out.println("5. Order food");
             System.out.println("6. Checkout");
-            System.out.println("7. Show bill");
+            System.out.println("7. Show archived bills");
             System.out.println("8. View all info");
             System.out.println("0. Back to main menu\n");
 
@@ -74,7 +74,7 @@ public class MainMenu {
                     break;
                 case 7:
                     try {
-                        Receipt.readReceipt();
+                        RoomHelper.readReceipt();
                     } catch (IOException i) {
                         i.printStackTrace();
                     }

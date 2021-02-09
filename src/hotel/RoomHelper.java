@@ -1,5 +1,7 @@
 package hotel;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -8,6 +10,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class RoomHelper {
@@ -339,15 +342,16 @@ public class RoomHelper {
             room.setRenter(null);
 
             // Check-out bill
-            activeBillMap.get(room.getRoomNumber()).printBill();
             try {
-                Receipt.writeReceipt(room.getRoomNumber(),cust);
+                writeReceipt(room.getRoomNumber(),cust);
             } catch (IOException i) {
                 i.printStackTrace();
             }
             Bill bookingBill = activeBillMap.get(room.getRoomNumber());
+            bookingBill.printBill();
             bookingBill.setCompleted(true);
             Database.getInstance().checkOutBill(bookingBill.getId());
+            activeBillMap.remove(room.getRoomNumber());
 
             System.out.println(Main.printBold("Check-out complete for room #" + room.getRoomNumber() + "\n"));
             // TODO - Skriv ut kvitto skriva antal nätter till (kvitto)
@@ -388,6 +392,26 @@ public class RoomHelper {
         int serviceBillTotal = activeBillMap.get(roomNumber).getBillableItemsTotal();
 
         return "Room#" + roomNumber + ", CustomerID: " + customerId + ", Days stayed: " + daysStayed + ", Daily charge: " + dailyCharge + "kr, Room cost: " + total + "kr, Service bill: " + serviceBillTotal + "kr";
+    }
+
+    public static void readReceipt() throws IOException{
+        File file = new File("receipt.txt");
+        Scanner sc = new Scanner(file);
+
+        while (sc.hasNext()) {
+            System.out.println(sc.nextLine());
+        }
+    }
+
+    public static void writeReceipt(int roomNumber, int customerId) throws IOException{
+        String name = RoomHelper.printAllStoredBills(roomNumber, customerId);
+
+        File file = new File("receipt.txt");
+        FileWriter writer = new FileWriter(file, true);
+        writer.write(System.lineSeparator() + name);
+        writer.flush();
+        writer.close();
+
     }
 
     public static void addRoomsToDataBase() {
