@@ -125,7 +125,7 @@ public class CustomerHelper {
             System.out.println("3. Search and select by phone number");
             System.out.println("0. Cancel and go back\n");
 
-            choice = Input.askInt("Choose for menu to continue: ");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:

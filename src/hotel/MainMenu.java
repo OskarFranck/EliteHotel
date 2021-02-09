@@ -51,7 +51,7 @@ public class MainMenu {
             System.out.println("8. View all info");
             System.out.println("0. Back to main menu\n");
 
-            choice = Input.askInt("Choose form menu to continue: ");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
