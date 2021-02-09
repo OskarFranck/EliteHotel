@@ -81,13 +81,18 @@ public class CustomerHelper {
     }
 
     public static void deleteCustomer(Customer customer) {
+        Room room = RoomHelper.findCustomersRoom(customer);
         try {
             while (true) {
-                String input = askString(Main.printBoldRed("Do you really want to delete customer #" + customer.getId() + " " + customer.getFullName() + "? (Y/N): "));
+                String input = askString(Main.printBold("Do you really want to delete customer #" + customer.getId() + " " + customer.getFullName() + "? (Y/N): "));
                 if (input.equalsIgnoreCase("y")) {
-                    Database.getInstance().deleteCustomer(customer);
-                    CustomerHelper.customers.remove(customer);
-                    return;
+                    if (room == null) {
+                        Database.getInstance().deleteCustomer(customer);
+                        CustomerHelper.customers.remove(customer);
+                        return;
+                    } else {
+                        System.out.println(Main.printBoldRed("Customer is booked to a room, can't delete customer until after checkout"));
+                    }
                 } else if (input.equalsIgnoreCase("n")) {
                     return;
                 } else {

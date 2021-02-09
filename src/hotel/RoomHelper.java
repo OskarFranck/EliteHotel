@@ -280,7 +280,6 @@ public class RoomHelper {
                 bookingId = rs.getInt("bookingId");
             }
             Database.getInstance().upgradeBooking(bookingId, upgradedRoomNumber);
-            System.out.println("Room updated in Database");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (Exception e) {
@@ -297,7 +296,7 @@ public class RoomHelper {
                 roomMap.get(currentRoomNumber).setRenter(null);
                 roomMap.get(upgradedRoomNumber).setRenter(cust);
                 roomMap.get(upgradedRoomNumber).setRented(true);
-                System.out.println("Room updated in hashMap");
+                System.out.println("Room information updated");
             } else {
                 System.out.println("Can't upgrade room, no existing booking exists");
             }

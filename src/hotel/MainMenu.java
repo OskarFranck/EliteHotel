@@ -100,7 +100,7 @@ public class MainMenu {
             System.out.println("2. List all customers");
             System.out.println("3. Update customer info");
             System.out.println("4. Delete customer");
-            System.out.println("0. Back to employee menu\n");
+            System.out.println("0. Back to receptionist menu\n");
 
             choice = Input.askInt("Choose from menu to continue: ");
 
@@ -205,7 +205,7 @@ public class MainMenu {
             System.out.println("2. Order Pasta - (" + Food.FoodMenuItem.PASTA.getPrice() + " kr)");
             System.out.println("3. Order Noodles - (" + Food.FoodMenuItem.NOODLES.getPrice() + " kr)");
             System.out.println("4. Order Drink - (" + Food.FoodMenuItem.DRINK.getPrice() + " kr)");
-            System.out.println("0. Go back to main menu\n");
+            System.out.println("0. Go back\n");
 
             choice = Input.askInt("Choose from menu to continue: ");
 
