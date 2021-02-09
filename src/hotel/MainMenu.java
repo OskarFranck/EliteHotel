@@ -1,6 +1,7 @@
 package hotel;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 public class MainMenu {
 
@@ -45,7 +46,8 @@ public class MainMenu {
             System.out.println("4. Upgrade or change room");
             System.out.println("5. Order food");
             System.out.println("6. Checkout");
-            System.out.println("7. Show stored checked out bills");
+            System.out.println("7. Show bill");
+            System.out.println("8. View all info");
             System.out.println("0. Back to main menu\n");
 
             choice = Input.askInt("Choose form menu to continue: ");
@@ -77,11 +79,15 @@ public class MainMenu {
                     }
                     // TODO - Show bill from database or from hashmap
                     break;
+                case 8:
+                    viewAllMenu();
+                    break;
                 default:
                     run = false;
                     break;
             }
-        } while (choice < 0 || choice > 7 || run);
+        } while (choice < 0 || choice > 8 || run);
+
     }
 
     private static void handleCustomers() {
@@ -132,7 +138,7 @@ public class MainMenu {
     }
 
     private static void customerMenu() {
-        System.out.println(Main.printBold("Customer menu\n"));
+        System.out.println(Main.printBold("\nCustomer menu"));
 
         int choice;
         boolean run = true;
@@ -168,10 +174,11 @@ public class MainMenu {
     private static void showRooms() {
 
         for (RoomType type: RoomType.values()) {
-            System.out.println(Main.printBold("\n" + type.toString()));
-            System.out.println("Bed: " + type.typeOfBed());
+            System.out.println(Main.printBold("\n" + type.print()));
+            System.out.println("Bed: " + type.typeOfBed() + " size");
             System.out.println("No. of beds: " + type.getNumberOfBeds());
             System.out.println("Has AC: " + ((type.hasAC()) ? "Yes" : "No"));
+            System.out.println("Breakfast included: " + ((type.isBreakfastIncluded()) ? "Yes" : "No"));
             System.out.println("Daily charge: " + type.getDailyCharge() + " SEK");
         }
         System.out.println("");
@@ -188,7 +195,7 @@ public class MainMenu {
             return;
         }
 
-        System.out.println("Order food menu\n");
+        System.out.println("\nOrder food menu");
         int choice;
         boolean run = true;
         do {
@@ -278,4 +285,49 @@ public class MainMenu {
             }
         }
     }
+
+    private static void viewAllMenu() {
+        System.out.println(Main.printBold("\nView all menu"));
+        int choice;
+        boolean run = true;
+        do {
+            System.out.println("1. View all customers");
+            System.out.println("2. View all rooms");
+            System.out.println("3. View all active bills");
+            System.out.println("0. Go back to main menu\n");
+
+            choice = Input.askInt("Choose from menu to continue: ");
+
+            switch (choice) {
+                case 1:
+                    System.out.println("\nAll customers:");
+                    printAllFromCollection(CustomerHelper.customers);
+                    System.out.println("");
+                    break;
+                case 2:
+                    System.out.println("\nAll rooms:");
+                    printAllFromCollection(RoomHelper.getRoomMap());
+                    System.out.println("");
+                    break;
+                case 3:
+                    System.out.println("\nAll active bills:");
+                    printAllFromCollection(RoomHelper.getActiveBillMap());
+                    System.out.println("");
+                    break;
+                default:
+                    run = false;
+                    break;
+            }
+        } while (choice < 0 || choice > 3 || run);
+
+    }
+
+    public static <T extends Printable> void printAllFromCollection(List<T> list) {
+        list.forEach(T::printToConsole);
+    }
+
+    public static <N extends Number, T extends Printable> void printAllFromCollection(HashMap<N, T> map) {
+        map.forEach((key, value) -> value.printToConsole());
+    }
+
 }

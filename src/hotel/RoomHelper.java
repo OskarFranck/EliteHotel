@@ -47,18 +47,6 @@ public class RoomHelper {
             e.printStackTrace();
         }
     }
-// Not used (remove)
-//    public static int getOnlyExistingCustId() {
-//        Customer cust;
-//        do {
-//            int customerId = Input.askInt("Enter customer ID: ");
-//            cust = CustomerHelper.getCustomer(customerId);
-//            if (cust == null) {
-//                System.out.println("Cant find customer, try again");
-//            }
-//        } while (cust == null);
-//        return cust.getId();
-//    }
 
     public static int getValidRoomForUpgrade() {
         while (true) {
@@ -361,7 +349,7 @@ public class RoomHelper {
             bookingBill.setCompleted(true);
             Database.getInstance().checkOutBill(bookingBill.getId());
 
-            System.out.println("Check-out complete for room #" + room.getRoomNumber());
+            System.out.println(Main.printBold("Check-out complete for room #" + room.getRoomNumber() + "\n"));
             // TODO - Skriv ut kvitto skriva antal nätter till (kvitto)
         } catch (SQLException throwables) {
             throwables.printStackTrace();

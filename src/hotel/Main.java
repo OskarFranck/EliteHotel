@@ -7,6 +7,9 @@ public class Main {
     public static void main(String[] args) {
 
         // TODO - Generics
+        // TODO ----- Make Room and Customer Comparable, and create a generic sort function
+        // TODO - Generics för availableRooms?
+
         // TODO - Write receipt to file and read as (showbill in menu)
         // TODO - lägga till data inför redovisning och förbereda oss
 

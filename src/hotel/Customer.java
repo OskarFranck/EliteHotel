@@ -2,7 +2,7 @@ package hotel;
 
 import java.sql.SQLException;
 
-public class Customer {
+public class Customer implements Printable {
 
     private int id;
     private String firstName;
@@ -76,6 +76,11 @@ public class Customer {
 
     public String getFullName() {
         return firstName + " " + lastName;
+    }
+
+    @Override
+    public void printToConsole() {
+        System.out.println("Customer: #" + id + " " + getFullName() + ", phone number: " + phoneNumber);
     }
 
 }

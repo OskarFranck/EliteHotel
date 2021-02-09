@@ -3,7 +3,7 @@ package hotel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Bill {
+public class Bill implements Printable {
 
     final private ArrayList<BillableService> billItems = new ArrayList<>();
     private int roomNumber;
@@ -83,10 +83,21 @@ public class Bill {
     private String billRow(String type, String name, int price) {
         return "# " + type + ": " + name + "    " + price + " kr";
     }
-    // TODO ändrade tillbaka till oscars orginal printBill (nu står det bara BillebleServices när man checkar ut)
+
     public void printBill() {
-        System.out.println("Customer bill");
+
+        System.out.println(Main.printBold("\nCustomer bill"));
+        int dailyCharge = RoomHelper.getRoomMap().get(roomNumber).getRoomType().getDailyCharge();
+        int daysStayed = RoomHelper.daysStayed(RoomHelper.getRoomMap().get(roomNumber).getRoomNumber());
+        int total = daysStayed * dailyCharge;
+
         billItems.forEach(item -> System.out.println(billRow(item.getServiceType(), item.toString(), item.getPrice())));
-        System.out.println("\n# Total: " + getBillableItemsTotal() + " kr");
+        System.out.println("Stayed nights: " + daysStayed + ", cost per night: " + dailyCharge + " kr, Total room cost: " + total + " kr");
+        System.out.println("\n# Total: " + (getBillableItemsTotal() + total) + " kr\n");
+    }
+
+    @Override
+    public void printToConsole() {
+        System.out.println("Bill: #" + id + " for room number #" + roomNumber + ". " + ((completed) ? "Completed bill" : "Open bill") + ((billItems.size() > 0) ? " contains: " + billItems : "."));
     }
 }
