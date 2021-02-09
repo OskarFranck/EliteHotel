@@ -2,6 +2,7 @@ package hotel;
 
 import java.util.HashMap;
 import java.util.List;
+import java.io.IOException;
 
 public class MainMenu {
 
@@ -46,11 +47,11 @@ public class MainMenu {
             System.out.println("4. Upgrade or change room");
             System.out.println("5. Order food");
             System.out.println("6. Checkout");
-            System.out.println("7. Show bill");
+            System.out.println("7. Show archived bills");
             System.out.println("8. View all info");
             System.out.println("0. Back to main menu\n");
 
-            choice = Input.askInt("Choose form menu to continue: ");
+            choice = Input.askInt("Choose from menu to continue: ");
 
             switch (choice) {
                 case 1:
@@ -72,7 +73,11 @@ public class MainMenu {
                     RoomHelper.checkOut(selectRoom("Select room to checkout: "));
                     break;
                 case 7:
-                   // showBill();
+                    try {
+                        RoomHelper.readReceipt();
+                    } catch (IOException i) {
+                        i.printStackTrace();
+                    }
                     // TODO - Show bill from database or from hashmap
                     break;
                 case 8:
@@ -134,6 +139,7 @@ public class MainMenu {
     }
 
     private static void customerMenu() {
+
         System.out.println(Main.printBold("\nCustomer menu"));
 
         int choice;
